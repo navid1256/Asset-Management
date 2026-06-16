@@ -413,8 +413,77 @@
                         </div>
                     </div>
                 </section>
+                <section class="component">
+                    <label class="dvd-writer-toggle" for="dvd-writer-enabled">
+                        <input type="checkbox" id="dvd-writer-enabled">
+                        <h2>DVD Writer</h2>
+                    </label>
 
-            </section>
+
+
+                    <div class="dvd-writer dvd-writer-section">
+                        <div class="dvd-writer number">
+                            <label for="dvd-writer-number">Number Of DVD Writer</label>
+                            <select name="dvd-writer-number" id="dvd-writer-number">
+                                <option value="Select Number" disabled>Select Number</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="dvd-writer-number" id="dvd-writer-numbers">
+                            <div class="dvd-writer-row" data-dvd-writer-row>
+                                <div class="dvd-writer brand">
+                                    <label for="dvd-writer-brand-1">Brand</label>
+                                    <select name="dvd-writer-brand[]" id="dvd-writer-brand-1">
+                                        <option value="Select Brand" disabled>Select Brand</option>
+                                        <option value="asus">ASUS</option>
+                                        <option value="lg">LG</option>
+                                        <option value="lite-on">Lite-On</option>
+                                        <option value="pioneer">Pioneer</option>
+                                        <option value="sony-optiarc">Sony Optiarc</option>
+                                        <option value="samsung">Samsung</option>
+                                        <option value="hp">HP</option>
+                                        <option value="dell">Dell</option>
+                                        <option value="lenovo">Lenovo</option>
+                                        <option value="plextor">Plextor</option>
+                                    </select>
+
+                                </div>
+                                <div class="dvd-writer model">
+                                    <label for="dvd-writer-model-1">Model</label>
+                                    <select name="dvd-writer-model[]" id="dvd-writer-model-1">
+                                        <option value="Select Model" disabled>Select Model</option>
+                                        <option value="asus-drw-24d5mt">ASUS DRW-24D5MT</option>
+                                        <option value="asus-drw-24f1st">ASUS DRW-24F1ST</option>
+                                        <option value="asus-drw-24b1st">ASUS DRW-24B1ST</option>
+                                        <option value="lg-gh24nsc0">LG GH24NSC0</option>
+                                        <option value="lg-gh24nscd">LG GH24NSD5</option>
+                                        <option value="lg-gh24nsd1">LG GH24NSD1</option>
+                                        <option value="lite-on-ihas124">Lite-On iHAS124</option>
+                                        <option value="lite-on-ihas324">Lite-On iHAS324</option>
+                                        <option value="pioneer-dvr-221bk">Pioneer DVR-221BK</option>
+                                        <option value="pioneer-dvr-s21wbk">Pioneer DVR-S21WBK</option>
+                                        <option value="sony-optiarc-ad-7280s">Sony Optiarc AD-7280S</option>
+                                        <option value="sony-optiarc-ad-7260s">Sony Optiarc AD-7260S</option>
+                                        <option value="samsung-sh-224db">Samsung SH-224DB</option>
+                                        <option value="samsung-sh-224fb">Samsung SH-224FB</option>
+                                        <option value="hp-dh16acsh">HP DH16ACSH</option>
+                                        <option value="hp-gh60l">HP GH60L</option>
+                                        <option value="dell-dw316">Dell DW316</option>
+                                        <option value="dell-gta0n">Dell GTA0N</option>
+                                        <option value="lenovo-gue0n">Lenovo GUE0N</option>
+                                        <option value="plextor-px-891sa">Plextor PX-891SA</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
 
         </fieldset>
     </form>
@@ -426,8 +495,22 @@
         const hardNumberSelect = document.getElementById('hard-number');
         const storageNumber = document.getElementById('storage-number');
         const hardRowTemplate = storageNumber.querySelector('[data-hard-row]').cloneNode(true);
+        const dvdWriterNumberSelect = document.getElementById('dvd-writer-number');
+        const dvdWriterNumber = document.getElementById('dvd-writer-numbers');
+        const dvdWriterRowTemplate = dvdWriterNumber.querySelector('[data-dvd-writer-row]').cloneNode(true);
+        const dvdWriterEnabled = document.getElementById('dvd-writer-enabled');
+        const dvdWriterSection = document.querySelector('.dvd-writer-section');
 
-        
+        function toggleDVDWriterSection() {
+            const isEnabled = dvdWriterEnabled.checked;
+
+            dvdWriterSection.classList.toggle('is-disabled', !isEnabled);
+
+            dvdWriterSection.querySelectorAll('select, input').forEach((field) => {
+                field.disabled = !isEnabled;
+            });
+        }
+
         function updateRamFieldIds(row, rowNumber) {
             row.querySelectorAll('label[for]').forEach((label) => {
                 const baseFor = label.htmlFor.replace(/-\d+$/, '');
@@ -452,27 +535,36 @@
             });
         }
 
+        function updateDVDWriterFieldIds(row, rowNumber) {
+            row.querySelectorAll('label[for]').forEach((label) => {
+                const baseFor = label.htmlFor.replace(/-\d+$/, '');
+                label.htmlFor = `${baseFor}-${rowNumber}`;
+            });
+
+            row.querySelectorAll('select, input').forEach((field) => {
+                const baseId = field.id.replace(/-\d+$/, '');
+                field.id = `${baseId}-${rowNumber}`;
+            });
+        }
+
         function renderRamRows() {
             const rowCount = Number(slotNumberSelect.value) || 1;
+            const rows = Array.from(ramSlots.querySelectorAll('[data-ram-row]'));
 
-            ramSlots.innerHTML = '';
+            while (rows.length > rowCount) {
+                rows.pop().remove();
+            }
 
-            for (let index = 1; index <= rowCount; index += 1) {
-                const row = ramRowTemplate.cloneNode(true);
-                updateRamFieldIds(row, index);
-
-                if (index > 1) {
-                    row.querySelectorAll('select').forEach((select) => {
-                        select.selectedIndex = 0;
-                    });
-
-                    row.querySelectorAll('input').forEach((input) => {
-                        input.value = '';
-                    });
-                }
-
+            while (rows.length < rowCount) {
+                const previousRow = rows[rows.length - 1] || ramRowTemplate;
+                const row = previousRow.cloneNode(true);
+                rows.push(row);
                 ramSlots.appendChild(row);
             }
+
+            rows.forEach((row, index) => {
+                updateRamFieldIds(row, index + 1);
+            });
         }
 
         function renderHardRows() {
@@ -494,10 +586,33 @@
             }
         }
 
+        function renderDVDWriterRows() {
+            const rowCount = Number(dvdWriterNumberSelect.value) || 1;
+
+            dvdWriterNumber.innerHTML = '';
+
+            for (let index = 1; index <= rowCount; index += 1) {
+                const row = dvdWriterRowTemplate.cloneNode(true);
+                updateDVDWriterFieldIds(row, index);
+
+                if (index > 1) {
+                    row.querySelectorAll('select').forEach((select) => {
+                        select.selectedIndex = 0;
+                    });
+                }
+
+                dvdWriterNumber.appendChild(row);
+            }
+        }
+
         slotNumberSelect.addEventListener('change', renderRamRows);
         hardNumberSelect.addEventListener('change', renderHardRows);
+        dvdWriterNumberSelect.addEventListener('change', renderDVDWriterRows);
+        dvdWriterEnabled.addEventListener('change', toggleDVDWriterSection);
+        toggleDVDWriterSection();
         renderRamRows();
         renderHardRows();
+        renderDVDWriterRows();
     </script>
 
 </body>
