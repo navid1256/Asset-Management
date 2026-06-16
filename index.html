@@ -270,7 +270,7 @@
                                 <div class="ram module">
                                     <label for="ram-module-1">Memory Module</label>
                                     <select id="ram-module-1" name="ram-module[]">
-                                        <option value="Select Module" disabled>Select Module</option>
+                                        <option value="Select Module" disabled>Module</option>
                                         <option value="0">DDR4</option>
                                         <option value="1">DDR5</option>
                                     </select>
@@ -278,7 +278,7 @@
                                 <div class="ram capacity">
                                     <label for="ram-capacity-1">Memory Capacity</label>
                                     <select name="ram-capacity[]" id="ram-capacity-1">
-                                        <option value="Select Module" disabled>Select Capacity</option>
+                                        <option value="Select Module" disabled>Capacity</option>
                                         <option value="0">1GB</option>
                                         <option value="1">2GB</option>
                                         <option value="2">4GB</option>
@@ -297,6 +297,81 @@
                         </div>
                     </div>
                 </section>
+                <section class="component">
+                    <h2>Storage</h2>
+                    <div class="storage">
+                        <div class="hard number">
+                            <label for="hard-number">Number Of Storages</label>
+                            <select name="hard-number" id="hard-number">
+                                <option value="Select Number" disabled>Select Number</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="storage-number" id="storage-number">
+                            <div class="hard-row" data-hard-row>
+                                <div class="hard type">
+                                    <label for="hard-type-1">Type</label>
+                                    <select id="hard-type-1" name="hard-type[]">
+                                        <option value="Select Type" disabled>Select Type</option>
+                                        <option value="0">NVMe</option>
+                                        <option value="1">M.2 SATA</option>
+                                        <option value="2">SATA</option>
+                                    </select>
+                                </div>
+                                <div class="hard brand">
+                                    <label for="hard-brand-1">Brand</label>
+                                    <select id="hard-brand-1" name="hard-brand[]">
+                                        <option value="Select Brand" disabled>Select Brand</option>
+                                        <option value="0">Western Digital</option>
+                                        <option value="1">Corsair</option>
+                                        <option value="2">Kingston</option>
+                                        <option value="3">Crucial</option>
+                                        <option value="4">G.Skill</option>
+                                        <option value="5">Samsung</option>
+                                        <option value="6">Team Group</option>
+                                        <option value="7">Patriot</option>
+                                    </select>
+                                </div>
+                                <div class="hard model">
+                                    <label for="hard-model-1">Model</label>
+                                    <select id="hard-model-1" name="hard-model[]">
+                                        <option value="Select Model" disabled>Select Model</option>
+                                        <option value="0">FURY Beast</option>
+                                        <option value="1">Vengeance</option>
+                                        <option value="2">Vengeance LPX</option>
+                                        <option value="3">Trident Z5 Neo RGB</option>
+                                        <option value="4">Trident Z5 RGB</option>
+                                        <option value="5">T-Force Xtreem ARGB</option>
+                                        <option value="6">Viper Steel</option>
+                                        <option value="8">Viper 4</option>
+                                        <option value="9">Viper RGB</option>
+                                        <option value="10">Aegis</option>
+                                    </select>
+                                </div>
+                                <div class="hard capacity">
+                                    <label for="hard-capacity-1">Hard Capacity</label>
+                                    <select name="hard-capacity[]" id="hard-capacity-1">
+                                        <option value="Select Module" disabled>Capacity</option>
+                                        <option value="0">125GB</option>
+                                        <option value="1">256GB</option>
+                                        <option value="2">512GB</option>
+                                        <option value="3">1TB</option>
+                                        <option value="4">2TB</option>
+                                        <option value="5">3TB</option>
+                                        <option value="6">4TB</option>
+                                        <option value="7">5TB</option>
+
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
             </section>
 
@@ -307,8 +382,24 @@
         const slotNumberSelect = document.getElementById('slot-number');
         const ramSlots = document.getElementById('ram-slots');
         const ramRowTemplate = ramSlots.querySelector('[data-ram-row]').cloneNode(true);
+        const hardNumberSelect = document.getElementById('hard-number');
+        const storageNumber = document.getElementById('storage-number');
+        const hardRowTemplate = storageNumber.querySelector('[data-hard-row]').cloneNode(true);
 
+        
         function updateRamFieldIds(row, rowNumber) {
+            row.querySelectorAll('label[for]').forEach((label) => {
+                const baseFor = label.htmlFor.replace(/-\d+$/, '');
+                label.htmlFor = `${baseFor}-${rowNumber}`;
+            });
+
+            row.querySelectorAll('select, input').forEach((field) => {
+                const baseId = field.id.replace(/-\d+$/, '');
+                field.id = `${baseId}-${rowNumber}`;
+            });
+        }
+
+        function updateHardFieldIds(row, rowNumber) {
             row.querySelectorAll('label[for]').forEach((label) => {
                 const baseFor = label.htmlFor.replace(/-\d+$/, '');
                 label.htmlFor = `${baseFor}-${rowNumber}`;
@@ -343,8 +434,29 @@
             }
         }
 
+        function renderHardRows() {
+            const rowCount = Number(hardNumberSelect.value) || 1;
+
+            storageNumber.innerHTML = '';
+
+            for (let index = 1; index <= rowCount; index += 1) {
+                const row = hardRowTemplate.cloneNode(true);
+                updateHardFieldIds(row, index);
+
+                if (index > 1) {
+                    row.querySelectorAll('select').forEach((select) => {
+                        select.selectedIndex = 0;
+                    });
+                }
+
+                storageNumber.appendChild(row);
+            }
+        }
+
         slotNumberSelect.addEventListener('change', renderRamRows);
+        hardNumberSelect.addEventListener('change', renderHardRows);
         renderRamRows();
+        renderHardRows();
     </script>
 
 </body>

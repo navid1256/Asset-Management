@@ -251,10 +251,11 @@ section.hardware select {
 }
 
 .ram.capacity select {
-    width: 110px;
+    width: 120px;
 }
 
-.ram-slots {
+.ram-slots,
+.storage-number {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -263,35 +264,59 @@ section.hardware select {
     margin-top: 10px;
 }
 
-.ram-row {
+.ram-row,
+.hard-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     gap: 14px 18px;
     width: 100%;
-    padding: 10px 0;
+    padding: 17px 0px 0px 0px;
 }
 
-.ram-row + .ram-row {
+.ram-row+.ram-row,
+.hard-row+.hard-row {
     border-top: 1px solid rgba(24, 24, 18, 0.25);
 }
 
-.ram-row > div {
+.ram-row>div,
+.hard-row>div {
     justify-content: flex-start;
 }
 
 .ram.module label,
 .ram.capacity label {
-    width: 110px;
+    width: 90px;
 }
 
 .ram.speed input {
-    width: 70px;
+    width: 30px;
 }
 
 .ram.speed label {
     width: 105px;
+}
+
+div.ram.slot-number {
+    position: absolute;
+    top: 15px;
+    right: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+div.ram.slot-number select {
+    width: 95px;
+}
+
+div.ram.model select {
+    width: 200px;
+}
+
+div.ram.slot-number label {
+    width: 120px;
 }
 
 .speed-unit {
@@ -336,7 +361,9 @@ section.hardware select {
     margin: 0;
 }
 
-div.ram.slot-number {
+
+
+div.hard.number {
     position: absolute;
     top: 15px;
     right: 100px;
@@ -345,12 +372,32 @@ div.ram.slot-number {
     justify-content: center;
 }
 
-div.ram.slot-number select {
+div.hard.number select {
     width: 95px;
 }
 
-div.ram.slot-number label {
-    width: 120px;
+div.hard.number label {
+    width: 150px;
+}
+
+.hard.type select,
+.hard.brand select {
+    width: 155px;
+}
+
+.hard.model select {
+    width: 220px;
+}
+
+.hard.capacity select {
+    width: 125px;
+}
+
+.hard.type label,
+.hard.brand label,
+.hard.model label,
+.hard.capacity label {
+    width: 95px;
 }
 
 
