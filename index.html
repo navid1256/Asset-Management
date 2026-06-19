@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IT Asset Managment</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="icon" href="logo.png" type="image">
 </head>
 
@@ -13,13 +13,13 @@
     <header>
         <h1>نرم افزار مدیریت درخواست و ثبت تجهیزات فناوری</h1>
         <div class="user-profile">
-            <img src="profile-avatar.avif" alt="user profile" class="avatar">
+            <img src="assets/img/profile-avatar.avif" alt="user profile" class="avatar">
             <div class="user-info">
                 <p class="username">نوید احمدزاده</p>
                 <p class="userrole">فناوری اطلاعات</p>
             </div>
         </div>
-        <img src="logo.png" alt="لوگو شرکت">
+        <img src="assets/img/logo.png" alt="لوگو شرکت">
     </header>
     <form action="send-case-info">
         <fieldset class="form-section">
@@ -56,7 +56,7 @@
                         </select>
                     </div>
                     <div>
-                        <label for="edare">اداره/واحد :</label>
+                        <label for="edare">اداره / واحد :</label>
                         <select name="edare" id="edare">
                             <option value="edare" disabled>اداره</option>
                             <option value="1">اداره 1</option>
@@ -116,6 +116,19 @@
                                 <option value="84||Core i5-4690">Core i5-4690</option>
                                 <option value="88||Core i5-4690K">Core i5-4690K</option>
                                 <option value="65||Core i5-5675C">Core i5-5675C</option>
+                            </select>
+                        </div>
+                        <div class="cpu speed">
+                            <label for="cpu-speed">سرعت :</label>
+                            <select name="cpu-speed" id="cpu-speed">
+                                <option value="Select Speed" disabled>Select Speed</option>
+                                <option value="1.0 Ghz">1.0 Ghz</option>
+                                <option value="1.5 Ghz">1.5 Ghz</option>
+                                <option value="2.0 Ghz">2.0 Ghz</option>
+                                <option value="2.5 Ghz">2.5 Ghz</option>
+                                <option value="3.0 Ghz">3.0 Ghz</option>
+                                <option value="3.5 Ghz">3.5 Ghz</option>
+                                <option value="4.0 Ghz">4.0 Ghz</option>
                             </select>
                         </div>
                     </div>
@@ -521,8 +534,7 @@
         <button type="button">بارگذاری برگه تحویل</button>
     </div>
 
-    <script src="script.js"></script>
-
+    <script src="assets/js/script.js"></script>
 
 
 </body>
