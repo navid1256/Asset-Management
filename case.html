@@ -21,53 +21,7 @@
         </div>
         <img src="assets/img/logo.png" alt="لوگو شرکت">
     </header>
-    <form action="send-case-info">
-        <fieldset class="form-section">
-            <legend>
-                اطلاعات تحویل گیرنده
-            </legend>
-            <section class="userinfo">
-                <div class="form-name">
-                    <div>
-                        <label for="name">نام :</label>
-                        <input type="text" id="name" placeholder="نام">
-                    </div>
-                    <div>
-                        <label for="family-name">نام خانوادگی :</label>
-                        <input type="text" id="family-name" placeholder="نام ختنوادگی">
-                    </div>
-                    <div>
-                        <label for="national-code">کد ملی :</label>
-                        <input type="number" id="national-code" placeholder="کد ملی">
-                    </div>
-                </div>
-
-
-                <div class="container">
-                    <div>
-                        <label for="moavenat">معاونت :</label>
-                        <select name="moavenat" id="moavenat">
-                            <option value="moavenat" disabled>معاونت</option>
-                            <option value="1">معاونت 1</option>
-                            <option value="2">معاونت 2</option>
-                            <option value="3">معاونت 3</option>
-                            <option value="4">معاونت 4</option>
-
-                        </select>
-                    </div>
-                    <div>
-                        <label for="edare">اداره / واحد :</label>
-                        <select name="edare" id="edare">
-                            <option value="edare" disabled>اداره</option>
-                            <option value="1">اداره 1</option>
-                            <option value="2">اداره 2</option>
-                            <option value="3">اداره 3</option>
-                            <option value="4">اداره 4</option>
-                        </select>
-                    </div>
-                </div>
-            </section>
-        </fieldset>
+    <form action="send-case-info" method="post" enctype="multipart/form-data">
         <fieldset class="form-section">
             <legend>
                 ثبت مشخصات تحویلی کیس
@@ -528,11 +482,16 @@
             </section>
 
         </fieldset>
+        <div class="form-actions">
+            <button type="submit" class="submit-button">ثبت</button>
+            <div class="delivery-upload">
+                <label for="delivery-sheet" class="upload-button">بارگذاری برگه تحویل</label>
+                <input type="file" id="delivery-sheet" name="delivery-sheet" class="file-input"
+                    accept="image/*,.pdf">
+                <span id="delivery-file-name" class="file-name" aria-live="polite">فایلی انتخاب نشده</span>
+            </div>
+        </div>
     </form>
-    <div class="btn">
-        <button type="submit">ثبت</button>
-        <button type="button">بارگذاری برگه تحویل</button>
-    </div>
 
     <script src="assets/js/script.js"></script>
 

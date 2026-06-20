@@ -6,6 +6,8 @@ const storageNumber = document.getElementById('storage-number');
 const hardRowTemplate = storageNumber.querySelector('[data-hard-row]').cloneNode(true);
 const dvdWriterEnabled = document.getElementById('dvd-writer-enabled');
 const dvdWriterSection = document.querySelector('.dvd-writer-section');
+const deliverySheetInput = document.getElementById('delivery-sheet');
+const deliveryFileName = document.getElementById('delivery-file-name');
 
 function toggleDVDWriterSection() {
     const isEnabled = dvdWriterEnabled.checked;
@@ -80,6 +82,15 @@ function renderHardRows() {
         storageNumber.appendChild(row);
     }
 }
+
+deliverySheetInput.addEventListener('change', () => {
+    const selectedFile = deliverySheetInput.files[0];
+
+    deliveryFileName.textContent = selectedFile
+        ? selectedFile.name
+        : 'فایلی انتخاب نشده';
+    deliveryFileName.title = selectedFile ? selectedFile.name : '';
+});
 
 slotNumberSelect.addEventListener('change', renderRamRows);
 hardNumberSelect.addEventListener('change', renderHardRows);
