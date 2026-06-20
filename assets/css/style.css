@@ -1,3 +1,5 @@
+@import url(../fonts/Dana/css/fontiran.css);
+
 * {
     box-sizing: border-box;
 }
@@ -5,9 +7,16 @@
 body {
     margin: 0;
     direction: rtl;
-    font-family: Arial, sans-serif;
+    font-family: dana, Arial, sans-serif;
     background-color: #e4e9e3;
     color: #222;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
 }
 
 header {
@@ -143,7 +152,7 @@ form div {
 section.it-numbers div {} */
 
 label {
-    width: 80px;
+    width: 90px;
     text-align: left;
 
 }
@@ -179,8 +188,8 @@ input {
 }
 
 input[type="number"] {
-    appearance: textfield;
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
