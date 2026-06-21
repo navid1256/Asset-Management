@@ -622,7 +622,8 @@ form .form-actions {
     border: 0;
 }
 
-.file-name {
+.file-name,
+.component-file-name {
     display: block;
     max-width: 220px;
     overflow: hidden;
@@ -731,6 +732,14 @@ section.component {
     font-weight: 700;
 }
 
+.component-upload {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    direction: ltr;
+}
+
 .component-total output {
     min-width: 55px;
     padding: 3px 8px;
@@ -740,6 +749,20 @@ section.component {
     border-radius: 6px;
     text-align: center;
     direction: ltr;
+}
+
+.component-upload-button.is-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: stroke;
+    background-color: #777;
+    transform: none;
+    box-shadow: none;
+}
+
+.component-upload-button.is-disabled:hover {
+    transform: none;
+    box-shadow: none;
 }
 
 @media (max-width: 850px) {
