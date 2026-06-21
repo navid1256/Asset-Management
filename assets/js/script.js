@@ -12,12 +12,57 @@ const dvdWriterSection = document.querySelector('.dvd-writer-section');
 const writerUploadInput = document.getElementById('writer-upload');
 const writerUploadButton = document.querySelector('label[for="writer-upload"]');
 
-const componentUploadInputs = document.querySelectorAll('.component-file-input');
-const deliverySheetInput = document.getElementById('delivery-sheet');
-const deliveryFileName = document.getElementById('delivery-file-name');
-
 const totalRamCapacity = document.getElementById('total-ram-capacity');
 const totalStorageCapacity = document.getElementById('total-storage-capacity');
+
+const fileUploadFields = [
+    {
+        inputId: 'delivery-sheet',
+        fileNameSelector: '#delivery-file-name',
+    },
+    {
+        inputId: 'cpu-upload',
+        fileNameSelector: '[data-file-name-for="cpu-upload"]',
+    },
+    {
+        inputId: 'motherboard-upload',
+        fileNameSelector: '[data-file-name-for="motherboard-upload"]',
+    },
+    {
+        inputId: 'gpu-upload',
+        fileNameSelector: '[data-file-name-for="gpu-upload"]',
+    },
+    {
+        inputId: 'ram-upload',
+        fileNameSelector: '[data-file-name-for="ram-upload"]',
+    },
+    {
+        inputId: 'storage-upload',
+        fileNameSelector: '[data-file-name-for="storage-upload"]',
+    },
+    {
+        inputId: 'writer-upload',
+        fileNameSelector: '[data-file-name-for="writer-upload"]',
+    },
+    {
+        inputId: 'power-upload',
+        fileNameSelector: '[data-file-name-for="power-upload"]',
+    },
+];
+
+function setWriterUploadState(isEnabled) {
+    if (!writerUploadInput || !writerUploadButton) {
+        return;
+    }
+
+    writerUploadInput.disabled = !isEnabled;
+    writerUploadButton.classList.toggle('is-disabled', !isEnabled);
+    writerUploadButton.setAttribute('aria-disabled', String(!isEnabled));
+
+    if (!isEnabled) {
+        resetFileUpload('writer-upload');
+    }
+}
 
 function toggleDVDWriterSection() {
     const isEnabled = dvdWriterEnabled.checked;
@@ -28,34 +73,10 @@ function toggleDVDWriterSection() {
         field.disabled = !isEnabled;
     });
 
-    if (writerUploadInput && writerUploadButton) {
-        writerUploadInput.disabled = !isEnabled;
-
-        writerUploadButton.classList.toggle('is-disabled', !isEnabled);
-        writerUploadButton.setAttribute('aria-disabled', String(!isEnabled));
-
-        if (!isEnabled) {
-            writerUploadInput.value = '';
-
-            const writerFileName = document.getElementById('writer-file-name');
-            updateFileName(writerUploadInput, writerFileName);
-        }
-    }
+    setWriterUploadState(isEnabled);
 }
 
-function updateRamFieldIds(row, rowNumber) {
-    row.querySelectorAll('label[for]').forEach((label) => {
-        const baseFor = label.htmlFor.replace(/-\d+$/, '');
-        label.htmlFor = `${baseFor}-${rowNumber}`;
-    });
-
-    row.querySelectorAll('select, input').forEach((field) => {
-        const baseId = field.id.replace(/-\d+$/, '');
-        field.id = `${baseId}-${rowNumber}`;
-    });
-}
-
-function updateHardFieldIds(row, rowNumber) {
+function updateRowFieldIds(row, rowNumber) {
     row.querySelectorAll('label[for]').forEach((label) => {
         const baseFor = label.htmlFor.replace(/-\d+$/, '');
         label.htmlFor = `${baseFor}-${rowNumber}`;
@@ -143,7 +164,7 @@ function renderRamRows() {
     }
 
     rows.forEach((row, index) => {
-        updateRamFieldIds(row, index + 1);
+        updateRowFieldIds(row, index + 1);
     });
 
     updateTotalRamCapacity();
@@ -157,7 +178,7 @@ function renderHardRows() {
     for (let index = 1; index <= rowCount; index += 1) {
         const row = hardRowTemplate.cloneNode(true);
 
-        updateHardFieldIds(row, index);
+        updateRowFieldIds(row, index);
 
         if (index > 1) {
             resetRowFields(row);
@@ -169,23 +190,24 @@ function renderHardRows() {
     updateTotalStorageCapacity();
 }
 
+function getSelectedFileName(inputElement) {
+    return inputElement.files[0] ? inputElement.files[0].name : 'فایلی انتخاب نشده';
+}
+
 function updateFileName(inputElement, fileNameElement) {
     if (!inputElement || !fileNameElement) {
         return;
     }
 
-    const selectedFile = inputElement.files[0];
+    const fileName = getSelectedFileName(inputElement);
 
-    fileNameElement.textContent = selectedFile
-        ? selectedFile.name
-        : 'فایلی انتخاب نشده';
-
-    fileNameElement.title = selectedFile ? selectedFile.name : '';
+    fileNameElement.textContent = fileName;
+    fileNameElement.title = inputElement.files[0] ? fileName : '';
 }
 
-function bindFileInput(inputId, fileNameId) {
+function bindFileUpload({ inputId, fileNameSelector }) {
     const inputElement = document.getElementById(inputId);
-    const fileNameElement = document.getElementById(fileNameId);
+    const fileNameElement = document.querySelector(fileNameSelector);
 
     if (!inputElement || !fileNameElement) {
         return;
@@ -196,6 +218,28 @@ function bindFileInput(inputId, fileNameId) {
     });
 }
 
+function bindFileUploads() {
+    fileUploadFields.forEach(bindFileUpload);
+}
+
+function resetFileUpload(inputId) {
+    const uploadField = fileUploadFields.find((field) => field.inputId === inputId);
+
+    if (!uploadField) {
+        return;
+    }
+
+    const inputElement = document.getElementById(uploadField.inputId);
+    const fileNameElement = document.querySelector(uploadField.fileNameSelector);
+
+    if (!inputElement || !fileNameElement) {
+        return;
+    }
+
+    inputElement.value = '';
+    updateFileName(inputElement, fileNameElement);
+}
+
 slotNumberSelect.addEventListener('change', renderRamRows);
 hardNumberSelect.addEventListener('change', renderHardRows);
 
@@ -203,15 +247,8 @@ ramSlots.addEventListener('change', updateTotalRamCapacity);
 storageNumber.addEventListener('change', updateTotalStorageCapacity);
 
 dvdWriterEnabled.addEventListener('change', toggleDVDWriterSection);
-bindFileInput('delivery-sheet', 'delivery-file-name');
 
-bindFileInput('cpu-upload', 'cpu-file-name');
-bindFileInput('motherboard-upload', 'motherboard-file-name');
-bindFileInput('gpu-upload', 'gpu-file-name');
-bindFileInput('ram-upload', 'ram-file-name');
-bindFileInput('storage-upload', 'storage-file-name');
-bindFileInput('writer-upload', 'writer-file-name');
-bindFileInput('power-upload', 'power-file-name');
+bindFileUploads();
 
 toggleDVDWriterSection();
 renderRamRows();
