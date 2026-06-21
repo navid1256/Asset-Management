@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IT Asset Managment</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/case.css">
     <link rel="icon" href="logo.png" type="image">
 </head>
 
@@ -86,6 +86,13 @@
                             </select>
                         </div>
                     </div>
+                    <div class="component-footer">
+                        <div class="component-upload">
+                            <label for="cpu-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                            <input type="file" id="cpu-upload" name="cpu-upload" class="component-file-input"
+                                accept="image/*,.pdf">
+                        </div>
+                    </div>
                 </section>
                 <section class="component">
                     <h2>MotherBoard</h2>
@@ -115,6 +122,14 @@
                                 <option value="5">TUF GAMING B560M-E</option>
                                 <option value="6">PRIME Z590-V</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="component-footer">
+                        <div class="component-upload">
+                            <label for="motherboard-upload" class="component-upload-button">بارگذاری تصویر
+                                گارانتی</label>
+                            <input type="file" id="motherboard-upload" name="motherboard-upload"
+                                class="component-file-input" accept="image/*,.pdf">
                         </div>
                     </div>
                 </section>
@@ -172,6 +187,14 @@
                                 <option value="6">10GB</option>
                                 <option value="7">12GB</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="component-footer">
+                        <div class="component-upload">
+                            <label for="motherboard-upload" class="component-upload-button">بارگذاری تصویر
+                                گارانتی</label>
+                            <input type="file" id="motherboard-upload" name="motherboard-upload"
+                                class="component-file-input" accept="image/*,.pdf">
                         </div>
                     </div>
                 </section>
@@ -232,12 +255,13 @@
                                     <label for="ram-capacity-1">مقدار حافظه :</label>
                                     <select name="ram-capacity[]" id="ram-capacity-1">
                                         <option value="Select Module" disabled>Capacity</option>
-                                        <option value="0">1GB</option>
-                                        <option value="1">2GB</option>
-                                        <option value="2">4GB</option>
-                                        <option value="3">6GB</option>
-                                        <option value="4">8GB</option>
-                                        <option value="5">16GB</option>
+                                        <option value="">Capacity</option>
+                                        <option value="1">1GB</option>
+                                        <option value="2">2GB</option>
+                                        <option value="4">4GB</option>
+                                        <option value="6">6GB</option>
+                                        <option value="8">8GB</option>
+                                        <option value="16">16GB</option>
                                     </select>
                                 </div>
                                 <div class="ram speed">
@@ -247,6 +271,18 @@
                                     <span class="speed-unit">MHz</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="component-footer">
+                        <div class="component-upload">
+                            <label for="ram-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                            <input type="file" id="ram-upload" name="ram-upload" class="component-file-input"
+                                accept="image/*,.pdf">
+                        </div>
+
+                        <div class="component-total">
+                            <span>ظرفیت کل RAM :</span>
+                            <output id="total-ram-capacity" name="total-ram-capacity">0GB</output>
                         </div>
                     </div>
                 </section>
@@ -348,19 +384,31 @@
                                     <label for="hard-capacity-1">ظرفیت :</label>
                                     <select name="hard-capacity[]" id="hard-capacity-1">
                                         <option value="Select Module" disabled>Capacity</option>
-                                        <option value="0">125GB</option>
-                                        <option value="1">256GB</option>
-                                        <option value="2">512GB</option>
-                                        <option value="3">1TB</option>
-                                        <option value="4">2TB</option>
-                                        <option value="5">3TB</option>
-                                        <option value="6">4TB</option>
-                                        <option value="7">5TB</option>
-
+                                        <option value="">Capacity</option>
+                                        <option value="125">125GB</option>
+                                        <option value="256">256GB</option>
+                                        <option value="512">512GB</option>
+                                        <option value="1024">1TB</option>
+                                        <option value="2048">2TB</option>
+                                        <option value="3072">3TB</option>
+                                        <option value="4096">4TB</option>
+                                        <option value="5120">5TB</option>
                                     </select>
                                 </div>
 
                             </div>
+                        </div>
+                    </div>
+                    <div class="component-footer">
+                        <div class="component-upload">
+                            <label for="storage-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                            <input type="file" id="storage-upload" name="storage-upload" class="component-file-input"
+                                accept="image/*,.pdf">
+                        </div>
+
+                        <div class="component-total">
+                            <span>ظرفیت کل Storage :</span>
+                            <output id="total-storage-capacity" name="total-storage-capacity">0GB</output>
                         </div>
                     </div>
                 </section>
@@ -429,7 +477,13 @@
                                 </div>
                             </div>
                         </div>
-
+                    </div>
+                    <div class="component-footer">
+                        <div class="component-upload">
+                            <label for="writer-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                            <input type="file" id="writer-upload" name="writer-upload" class="component-file-input"
+                                accept="image/*,.pdf">
+                        </div>
                     </div>
                 </section>
                 <section class="component">
@@ -478,6 +532,13 @@
                             </select>
                         </div>
                     </div>
+                    <div class="component-footer">
+                        <div class="component-upload">
+                            <label for="power-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                            <input type="file" id="power-upload" name="power-upload" class="component-file-input"
+                                accept="image/*,.pdf">
+                        </div>
+                    </div>
                 </section>
             </section>
 
@@ -486,8 +547,7 @@
             <button type="submit" class="submit-button">ثبت</button>
             <div class="delivery-upload">
                 <label for="delivery-sheet" class="upload-button">بارگذاری برگه تحویل</label>
-                <input type="file" id="delivery-sheet" name="delivery-sheet" class="file-input"
-                    accept="image/*,.pdf">
+                <input type="file" id="delivery-sheet" name="delivery-sheet" class="file-input" accept="image/*,.pdf">
                 <span id="delivery-file-name" class="file-name" aria-live="polite">فایلی انتخاب نشده</span>
             </div>
         </div>
