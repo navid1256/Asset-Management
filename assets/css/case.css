@@ -311,6 +311,19 @@ section.component {
     width: 125px;
 }
 
+.gpu.is-onboard .gpu.brand,
+.gpu.is-onboard .gpu.model,
+.gpu.is-onboard .gpu.memory {
+    opacity: 0.5;
+}
+
+.gpu.is-onboard .gpu.brand select,
+.gpu.is-onboard .gpu.model select,
+.gpu.is-onboard .gpu.memory select {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
 /* =========================
    RAM
 ========================= */

@@ -9,6 +9,17 @@ const hardRowTemplate = storageNumber.querySelector('[data-hard-row]').cloneNode
 const dvdWriterEnabled = document.getElementById('dvd-writer-enabled');
 const dvdWriterSection = document.querySelector('.dvd-writer-section');
 
+const gpuOnboardRadio = document.getElementById('gpu-onboard');
+const gpuInternalRadio = document.getElementById('gpu-internal');
+const gpuContainer = document.querySelector('.gpu');
+
+const gpuFields = document.querySelectorAll(
+    '#gpu-brand, #gpu-model, #gpu-memory'
+);
+
+const gpuUploadInput = document.getElementById('gpu-upload');
+const gpuUploadButton = document.querySelector('label[for="gpu-upload"]');
+
 const writerUploadInput = document.getElementById('writer-upload');
 const writerUploadButton = document.querySelector('label[for="writer-upload"]');
 
@@ -76,6 +87,37 @@ function toggleDVDWriterSection() {
     setWriterUploadState(isEnabled);
 }
 
+function setGpuUploadState(isEnabled) {
+    if (!gpuUploadInput || !gpuUploadButton) {
+        return;
+    }
+
+    gpuUploadInput.disabled = !isEnabled;
+    gpuUploadButton.classList.toggle('is-disabled', !isEnabled);
+    gpuUploadButton.setAttribute('aria-disabled', String(!isEnabled));
+
+    if (!isEnabled) {
+        resetFileUpload('gpu-upload');
+    }
+}
+
+function toggleGpuSection() {
+    if (!gpuOnboardRadio || !gpuInternalRadio) {
+        return;
+    }
+
+    const isInternalGpu = gpuInternalRadio.checked;
+
+    gpuFields.forEach((field) => {
+        field.disabled = !isInternalGpu;
+    });
+
+    if (gpuContainer) {
+        gpuContainer.classList.toggle('is-onboard', !isInternalGpu);
+    }
+
+    setGpuUploadState(isInternalGpu);
+}
 function updateRowFieldIds(row, rowNumber) {
     row.querySelectorAll('label[for]').forEach((label) => {
         const baseFor = label.htmlFor.replace(/-\d+$/, '');
@@ -248,9 +290,14 @@ storageNumber.addEventListener('change', updateTotalStorageCapacity);
 
 dvdWriterEnabled.addEventListener('change', toggleDVDWriterSection);
 
+gpuOnboardRadio.addEventListener('change', toggleGpuSection);
+gpuInternalRadio.addEventListener('change', toggleGpuSection);
+
 bindFileUploads();
 
 toggleDVDWriterSection();
+toggleGpuSection();
+
 renderRamRows();
 renderHardRows();
 updateTotalRamCapacity();
