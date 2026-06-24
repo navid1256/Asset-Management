@@ -5,23 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Case Info</title>
-    <link rel="stylesheet" href="assets/css/case.css">
-    <link rel="icon" href="logo.png" type="image">
+    <link rel="stylesheet" href="../../assets/css/case.css">
+    <link rel="icon" href="../../assets/img/logo.png" type="image">
 </head>
 
 <body>
     <header>
         <h1>نرم افزار مدیریت درخواست و ثبت تجهیزات فناوری</h1>
         <div class="user-profile">
-            <img src="assets/img/profile-avatar.avif" alt="user profile" class="avatar">
+            <img src="../../assets/img/profile-avatar.avif" alt="user profile" class="avatar">
             <div class="user-info">
-                <p class="username" id="profile-full-name">نام کاربر</p>
+                <p class="username">
+                    <span>تحویل گیرنده :</span>
+                    <span id="profile-full-name">نام کاربر</span>
+                </p>
                 <p class="userrole" id="profile-department">معاونت / اداره</p>
             </div>
         </div>
-        <img src="assets/img/logo.png" alt="لوگو شرکت">
+        <img src="../../assets/img/logo.png" alt="لوگو شرکت">
     </header>
-    <form action="send-case-info" method="post" enctype="multipart/form-data">
+    <form action="../../send-case-info" method="post" enctype="multipart/form-data">
         <fieldset class="form-section">
             <legend>
                 ثبت مشخصات تحویلی کیس
@@ -567,8 +570,8 @@
             </div>
         </div>
     </form>
-    <SCript SRC="assets/js/user-profile.js"></SCript>
-    <script src="assets/js/script.js"></script>
+    <script src="../../assets/js/user-profile.js"></script>
+    <script src="../../assets/js/script.js"></script>
 
 
 </body>
