@@ -25,11 +25,13 @@
                 <div class="form-name">
                     <div>
                         <label for="name">نام :</label>
-                        <input type="text" id="name" name="name" placeholder="نام" required>
+                        <input type="text" id="name" name="name" placeholder="نام" autocomplete="given-name"
+                            pattern="[^0-9۰-۹٠-٩]*" required>
                     </div>
                     <div>
                         <label for="family-name">نام خانوادگی :</label>
-                        <input type="text" id="family-name" name="familyName" placeholder="نام ختنوادگی" required>
+                        <input type="text" id="family-name" name="familyName" placeholder="نام ختنوادگی"
+                            autocomplete="family-name" pattern="[^0-9۰-۹٠-٩]*" required>
                     </div>
                     <div>
                         <label for="national-code">کد ملی :</label>
