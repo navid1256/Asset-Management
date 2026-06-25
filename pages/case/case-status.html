@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Case Status</title>
-    <link rel="stylesheet" href="../../assets/css/case.css">
+    <link rel="stylesheet" href="../../assets/css/case-status.css">
     <link rel="icon" href="../../assets/img/logo.png" type="image">
 </head>
 
@@ -24,3 +24,36 @@
         </div>
         <img src="../../assets/img/logo.png" alt="لوگو شرکت">
     </header>
+
+    <form action="#" method="post" class="case-form">
+        <fieldset class="form-section">
+            <legend>
+                وضعیت کیس
+            </legend>
+            <section class="new-case">
+                <h2>کیس جدید</h2>
+                <div class="case-status">
+                    <label for="case-status"> وضعیت کیس :</label>
+                    <select id="case-status" name="caseStatus">
+                        <option value="Select Status" disabled>Select Status</option>
+                        <option value="0">در حال استفاده</option>
+                        <option value="1" selected>استفاده نشده</option>
+                    </select>
+                </div>
+            </section>
+            <hr>
+            <section class="old-case">
+                <h2>کیس قدیمی</h2>
+                <div class="case-status">
+                    <label for="old-case-status"> وضعیت کیس :</label>
+                    <select id="old-case-status" name="oldCaseStatus">
+                        <option value="Select Status" disabled>Select Status</option>
+                        <option value="0">در حال استفاده</option>
+                        <option value="1" selected>از رده خارج شده</option>
+                    </select>
+                </div>
+            </section>
+        </fieldset>
+    </form>
+
+</body>
