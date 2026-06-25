@@ -31,12 +31,14 @@
             </legend>
             <section class="it-numbers">
                 <div class="shomare-amval">
-                    <label for="shomare-amval"> شماره اموال :</label>
-                    <input type="number" id="shomare-amval" placeholder="شماره اموال">
+                    <label for="asset-number"> شماره اموال :</label>
+                    <input type="number" id="asset-number" name="assetNumber" placeholder="شماره اموال"
+                        inputmode="numeric" maxlength="5" pattern="[0-9۰-۹٠-٩]">
                 </div>
                 <div class="shomare-it">
-                    <label for="shomare-it"> شماره IT :</label>
-                    <input type="number" id="shomare-it" placeholder="شماره IT">
+                    <label for="it-number"> شماره IT :</label>
+                    <input type="number" id="it-number" name="itNumber" placeholder="شماره IT" inputmode="numeric"
+                        maxlength="4" pattern="[0-9۰-۹٠-٩]" required>
                 </div>
             </section>
         </fieldset>
@@ -559,6 +561,50 @@
                     </div>
                 </section>
             </section>
+
+            <section class="component">
+                <h2>Case</h2>
+                <div class="case">
+                    <div class="case brand">
+                        <label for="case-brand">برند :</label>
+                        <select name="case-brand" id="case-brand">
+                            <option value="Select Brand" disabled>Select Brand</option>
+                            <option value="0">Corsair</option>
+                            <option value="1">EVGA</option>
+                            <option value="2">Seasonic</option>
+                            <option value="3">Cooler Master</option>
+                            <option value="4">Thermaltake</option>
+                            <option value="5">be quiet!</option>
+                            <option value="6">NZXT</option>
+                            <option value="7">Antec</option>
+                        </select>
+                    </div>
+                    <div class="case model">
+                        <label for="case-model">مدل :</label>
+                        <select name="case-model" id="case-model">
+                            <option value="Select Model" disabled>Select Model</option>
+                            <option value="0">RM750x</option>
+                            <option value="1">RM850x</option>
+                            <option value="2">RM1000x</option>
+                            <option value="3">SuperNOVA 750 G5</option>
+                            <option value="4">SuperNOVA 850 G5</option>
+                            <option value="5">SuperNOVA 1000 G5</option>
+                            <option value="6">Focus GX-750</option>
+                            <option value="7">Focus GX-850</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="component-footer">
+                    <div class="component-upload">
+                        <label for="case-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                        <input type="file" id="case-upload" name="case-upload" class="component-file-input"
+                            accept="image/*,.pdf">
+                        <span class="component-file-name" data-file-name-for="case-upload" aria-live="polite">فایلی
+                            انتخاب نشده</span>
+                    </div>
+                </div>
+            </section>
+            
 
         </fieldset>
         <div class="form-actions">

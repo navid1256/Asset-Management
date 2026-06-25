@@ -1039,7 +1039,8 @@ form .form-actions {
     .power,
     .ram-row,
     .hard-row,
-    .dvd-writer-row {
+    .dvd-writer-row
+    .case-row {
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
@@ -1057,7 +1058,8 @@ form .form-actions {
     .power>div,
     .ram-row>div,
     .hard-row>div,
-    .dvd-writer-row>div {
+    .dvd-writer-row>div
+    .case-row>div {
         width: 100%;
         flex-direction: column;
         align-items: stretch;
@@ -1077,7 +1079,11 @@ form .form-actions {
     .hard.model label,
     .hard.capacity label,
     .dvd-writer.brand label,
-    .dvd-writer.model label {
+    .dvd-writer.model label,
+    .cd-writer.model label,
+    .case label,
+    div.case.brand label,
+    div.case.model label {
         width: auto;
         text-align: right;
     }
@@ -1119,7 +1125,10 @@ form .form-actions {
     .dvd-writer.model select,
     div.ram.slot-number select,
     div.hard.number select,
-    div.dvd-writer.number select {
+    div.dvd-writer.number select,
+    div.cd-writer.number select,
+    div.case.brand select,
+    div.case.model select {
         width: 100%;
     }
 
