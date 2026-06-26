@@ -215,3 +215,19 @@ hr {
     width: 100px ;
     gap: 10px ;
 }
+
+section.old-case {
+    padding-bottom: 20px ;
+}
+
+.new-case.is-disabled,
+.old-case.is-disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.new-case.is-disabled select,
+.old-case.is-disabled select {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}

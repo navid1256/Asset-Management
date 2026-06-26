@@ -24,7 +24,7 @@
         </div>
         <img src="../../assets/img/logo.png" alt="لوگو شرکت">
     </header>
-    <form action="../../send-case-info" method="post" enctype="multipart/form-data">
+    <form id="case-info-form" action="case-status.html" method="post" enctype="multipart/form-data">
         <fieldset class="form-section">
             <legend>
                 ثبت مشخصات تحویلی کیس
@@ -32,13 +32,13 @@
             <section class="it-numbers">
                 <div class="shomare-amval">
                     <label for="asset-number"> شماره اموال :</label>
-                    <input type="number" id="asset-number" name="assetNumber" placeholder="شماره اموال"
-                        inputmode="numeric" maxlength="5" pattern="[0-9۰-۹٠-٩]">
+                    <input type="text" id="asset-number" name="assetNumber" placeholder="شماره اموال"
+                        inputmode="numeric" maxlength="5" pattern="[0-9۰-۹٠-٩]{0,5}" autocomplete="off">
                 </div>
                 <div class="shomare-it">
                     <label for="it-number"> شماره IT :</label>
-                    <input type="number" id="it-number" name="itNumber" placeholder="شماره IT" inputmode="numeric"
-                        maxlength="4" pattern="[0-9۰-۹٠-٩]" required>
+                    <input type="text" id="it-number" name="itNumber" placeholder="شماره IT" inputmode="numeric"
+                        maxlength="4" pattern="[0-9۰-۹٠-٩]{1,4}" autocomplete="off" required>
                 </div>
             </section>
         </fieldset>
@@ -56,14 +56,18 @@
                                 <option value="1" selected>INTEL</option>
                             </select>
                         </div>
-                        <div class="cpu socket">
-                            <label for="cpu-socket">نسل :</label>
-                            <select name="cpu-socket" id="cpu-socket">
-                                <option value="Select Socket" disabled>Select Gen</option>
+                        <div class="cpu gen">
+                            <label for="cpu-gen">نسل :</label>
+                            <select name="cpu-gen" id="cpu-gen">
+                                <option value="Select Gen" disabled>Select Gen</option>
                                 <option value="0">Gen 7th</option>
                                 <option value="1">Gen 8th</option>
                                 <option value="2">Gen 9th</option>
                                 <option value="3">Gen 10th</option>
+                                <option value="4">Gen 11th</option>
+                                <option value="5">Gen 12th</option>
+                                <option value="6">Gen 13th</option>
+                                <option value="7">Gen 14th</option>
                             </select>
                         </div>
                         <div class="cpu model">

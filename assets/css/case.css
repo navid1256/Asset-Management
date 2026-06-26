@@ -248,7 +248,7 @@ section.component {
     width: 145px;
 }
 
-.cpu.socket select,
+.cpu.gen select,
 .motherboard.form-factor select {
     width: 170px;
 }
@@ -1158,7 +1158,7 @@ form .form-actions {
     .motherboard.brand select,
     .gpu.brand select,
     .ram.brand select,
-    .cpu.socket select,
+    .cpu.gen select,
     .motherboard.form-factor select,
     .cpu.model select,
     .gpu.model select,
