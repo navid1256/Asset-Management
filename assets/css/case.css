@@ -55,7 +55,7 @@ header img {
 
 .user-profile {
     position: absolute;
-    top: 55px;
+    top: 40px;
     right: 15px;
     display: flex;
     align-items: center;
@@ -91,6 +91,26 @@ header img {
     margin: 5px 0 0;
     color: #666;
     font-size: 14px;
+}
+
+.logged-in-user {
+    position: absolute;
+    top: 130px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 280px;
+    min-height: 32px;
+    padding: 6px 12px;
+    color: #222;
+    background-color: aliceblue;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.logged-in-user span:last-child {
+    font-weight: 600;
 }
 
 /* =========================
@@ -1442,5 +1462,36 @@ form .form-actions {
 
     .component-upload-button {
         font-size: 14px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .logged-in-user {
+        right: 24px;
+        width: 240px;
+    }
+}
+
+@media (max-width: 900px) {
+    .logged-in-user {
+        top: 101px;
+        right: 24px;
+        width: 230px;
+    }
+}
+
+@media (max-width: 640px) {
+    .logged-in-user {
+        position: static;
+        order: 4;
+        width: 100%;
+        max-width: 280px;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 420px) {
+    .logged-in-user {
+        max-width: 100%;
     }
 }

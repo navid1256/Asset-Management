@@ -20,24 +20,40 @@ const getStoredUserProfile = () => {
 const renderUserProfile = () => {
     const fullNameElement = document.querySelector("#profile-full-name");
     const departmentElement = document.querySelector("#profile-department");
+    const loggedInUserElement = document.querySelector("#logged-in-username");
 
-    if (!fullNameElement || !departmentElement) {
+    if (!fullNameElement && !departmentElement && !loggedInUserElement) {
         return;
     }
 
     const userProfile = getStoredUserProfile();
 
     if (!userProfile) {
-        fullNameElement.textContent = "کاربر نامشخص";
-        departmentElement.textContent = "معاونت / اداره نامشخص";
+        if (fullNameElement) {
+            fullNameElement.textContent = "کاربر نامشخص";
+        }
+        if (departmentElement) {
+            departmentElement.textContent = "معاونت / اداره نامشخص";
+        }
+        if (loggedInUserElement) {
+            loggedInUserElement.textContent = "کاربر نامشخص";
+        }
         return;
     }
 
     const fullName = `${userProfile.name} ${userProfile.familyName}`.trim();
     const department = `${userProfile.moavenat} / ${userProfile.edare}`;
+    const loggedInUser = userProfile.username || fullName || "کاربر نامشخص";
 
-    fullNameElement.textContent = fullName;
-    departmentElement.textContent = department;
+    if (fullNameElement) {
+        fullNameElement.textContent = fullName;
+    }
+    if (departmentElement) {
+        departmentElement.textContent = department;
+    }
+    if (loggedInUserElement) {
+        loggedInUserElement.textContent = loggedInUser;
+    }
 };
 
 document.addEventListener("DOMContentLoaded", renderUserProfile);
