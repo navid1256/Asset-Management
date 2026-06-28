@@ -263,7 +263,7 @@ main {
     }
 
     .assets-main {
-        min-height: auto;
+        min-height: 0;
         padding: 28px 14px;
     }
 
@@ -290,3 +290,4 @@ main {
         max-width: 100%;
     }
 }
+
