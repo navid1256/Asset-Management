@@ -80,6 +80,12 @@ body {
   white-space: nowrap;
 }
 
+.btn-inside:hover {
+  background: #e3eae4;
+  color: #064b22;
+  transform: translateY(-2px);
+}
+
 .wrapper .btn {
   width: 100%;
   height: 45px;
