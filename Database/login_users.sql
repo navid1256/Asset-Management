@@ -1,101 +1,84 @@
--- =========================================================
--- OTP Login Database for XAMPP / phpMyAdmin
--- Database: otp_login_db
--- Purpose: Login-only system with prepared users + OTP + login logs
--- =========================================================
-
-CREATE DATABASE IF NOT EXISTS otp_login_test
+CREATE DATABASE IF NOT EXISTS user_management
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-USE otp_login_test;
+USE user_management;
 
--- برای اجرای مجدد فایل بدون خطای Foreign Key
-SET FOREIGN_KEY_CHECKS = 0;
 
-DROP VIEW IF EXISTS v_login_history;
-DROP TABLE IF EXISTS login_logs;
-DROP TABLE IF EXISTS otp_codes;
-DROP TABLE IF EXISTS users;
-
-SET FOREIGN_KEY_CHECKS = 1;
-
--- =========================================================
--- 1) Users Table
--- کاربران از قبل آماده هستند و Register نداریم
--- =========================================================
-
+-- =====================================
+-- جدول کاربران
+-- =====================================
 CREATE TABLE users (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    national_id VARCHAR(10) NOT NULL,
+    first_name  VARCHAR(100) NOT NULL,
+    last_name   VARCHAR(100) NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    mobile VARCHAR(20) NOT NULL UNIQUE,
+    PRIMARY KEY (national_id),
 
-    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    CONSTRAINT chk_users_national_id
+        CHECK (national_id REGEXP '^[0-9]{10}$')
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
 
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =========================================================
--- 2) OTP Codes Table
--- کدهای OTP فقط برای کاربران موجود ساخته می‌شوند
--- =========================================================
+-- =====================================
+-- جدول اطلاعات ورود کاربر
+-- ارتباط یک‌به‌یک با جدول users
+-- =====================================
+CREATE TABLE user_credentials (
+    id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    national_id   VARCHAR(10) NOT NULL,
+    username      VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP NOT NULL
+                  DEFAULT CURRENT_TIMESTAMP
+                  ON UPDATE CURRENT_TIMESTAMP,
 
-CREATE TABLE otp_codes (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    PRIMARY KEY (id),
 
-    user_id BIGINT UNSIGNED NOT NULL,
+    UNIQUE KEY uq_user_credentials_national_id (national_id),
+    UNIQUE KEY uq_user_credentials_username (username),
 
-    otp_hash VARCHAR(255) NOT NULL,
-    expires_at DATETIME NOT NULL,
-    is_used TINYINT(1) NOT NULL DEFAULT 0,
-    attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    CONSTRAINT fk_user_credentials_user
+        FOREIGN KEY (national_id)
+        REFERENCES users (national_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
 
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_otp_user
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+-- =====================================
+-- جدول OTP
+-- هر کاربر می‌تواند چند OTP داشته باشد
+-- =====================================
+CREATE TABLE user_otps (
+    id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    national_id VARCHAR(10) NOT NULL,
+    mobile      VARCHAR(11) NOT NULL,
+    otp_code    VARCHAR(10) NOT NULL,
+    expired_at  DATETIME NOT NULL,
+    is_used     TINYINT(1) NOT NULL DEFAULT 0,
+    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    INDEX idx_otp_user_id (user_id),
-    INDEX idx_otp_expires_at (expires_at),
-    INDEX idx_otp_is_used (is_used)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    PRIMARY KEY (id),
 
--- =========================================================
--- 3) Login Logs Table
--- هر ورود موفق کاربر اینجا ثبت می‌شود
--- =========================================================
+    KEY idx_user_otps_national_id (national_id),
+    KEY idx_user_otps_mobile (mobile),
+    KEY idx_user_otps_expired_at (expired_at),
 
-CREATE TABLE login_logs (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    CONSTRAINT fk_user_otps_user
+        FOREIGN KEY (national_id)
+        REFERENCES users (national_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
 
-    user_id BIGINT UNSIGNED NOT NULL,
-
-    mobile_snapshot VARCHAR(20) NOT NULL,
-
-    login_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_login_user
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
-
-    INDEX idx_login_user_id (user_id),
-    INDEX idx_login_at (login_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- =========================================================
--- Sample Prepared Users
--- این‌ها کاربران آماده هستند؛ سایت Register ندارد
--- =========================================================
-
-INSERT INTO users (first_name, last_name, mobile, is_active)
-VALUES
-('محمد علی', 'مزدارانی', '091231224505', 1),
-('مجتبئ', 'ارزیده', '09127093607', 1),
-('نوید', 'احمدزاده', '09122950681', 1),
-
+    CONSTRAINT chk_user_otps_mobile
+        CHECK (mobile REGEXP '^09[0-9]{9}$')
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
