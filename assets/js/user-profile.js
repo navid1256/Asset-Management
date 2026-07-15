@@ -1,6 +1,7 @@
 "use strict";
 
 const USER_PROFILE_STORAGE_KEY = "itAssetUserProfile";
+const CURRENT_USER_ENDPOINT = "../../process/current-user.php";
 
 const getStoredUserProfile = () => {
     const storedProfile = localStorage.getItem(USER_PROFILE_STORAGE_KEY);
@@ -17,12 +18,11 @@ const getStoredUserProfile = () => {
     }
 };
 
-const renderUserProfile = () => {
+const renderReceiverProfile = () => {
     const fullNameElement = document.querySelector("#profile-full-name");
     const departmentElement = document.querySelector("#profile-department");
-    const loggedInUserElement = document.querySelector("#logged-in-username");
 
-    if (!fullNameElement && !departmentElement && !loggedInUserElement) {
+    if (!fullNameElement && !departmentElement) {
         return;
     }
 
@@ -35,15 +35,11 @@ const renderUserProfile = () => {
         if (departmentElement) {
             departmentElement.textContent = "معاونت / اداره نامشخص";
         }
-        if (loggedInUserElement) {
-            loggedInUserElement.textContent = "کاربر نامشخص";
-        }
         return;
     }
 
     const fullName = `${userProfile.name} ${userProfile.familyName}`.trim();
     const department = `${userProfile.moavenat} / ${userProfile.edare}`;
-    const loggedInUser = userProfile.username || fullName || "کاربر نامشخص";
 
     if (fullNameElement) {
         fullNameElement.textContent = fullName;
@@ -51,9 +47,36 @@ const renderUserProfile = () => {
     if (departmentElement) {
         departmentElement.textContent = department;
     }
-    if (loggedInUserElement) {
-        loggedInUserElement.textContent = loggedInUser;
+};
+
+const renderLoggedInUser = async () => {
+    const loggedInUserElement = document.querySelector("#logged-in-username");
+
+    if (!loggedInUserElement) {
+        return;
+    }
+
+    try {
+        const response = await fetch(CURRENT_USER_ENDPOINT, {
+            headers: {
+                Accept: "application/json",
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            loggedInUserElement.textContent = "کاربر وارد نشده";
+            return;
+        }
+
+        const data = await response.json();
+        loggedInUserElement.textContent = data.user.fullName || data.user.username;
+    } catch {
+        loggedInUserElement.textContent = "خطا در دریافت کاربر";
     }
 };
 
-document.addEventListener("DOMContentLoaded", renderUserProfile);
+document.addEventListener("DOMContentLoaded", () => {
+    renderReceiverProfile();
+    renderLoggedInUser();
+});

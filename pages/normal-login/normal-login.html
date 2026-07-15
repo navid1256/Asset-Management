@@ -12,7 +12,8 @@
   <div class="wrapper">
     <img class="logo" src="../../assets/img/logo 1024.png" alt="Logo" />
     <h2>ورود</h2>
-    <form method="post" id="loginForm">
+    <p id="login-message" role="alert" hidden></p>
+    <form action="../../process/login-handler.php" method="post" id="loginForm">
       <!-- یوزر نیم -->
       <div class="input-box">
         <input type="text" name="username" placeholder="نام کاربری" value="" required />
@@ -25,6 +26,21 @@
       <button type="submit" name="verify" class="btn">ورود</button>
     </form>
   </div>
+  <script>
+    const loginError = new URLSearchParams(window.location.search).get("error");
+    const loginMessage = document.getElementById("login-message");
+
+    const userCreated = new URLSearchParams(window.location.search).get("created");
+
+    if ((loginError || userCreated) && loginMessage) {
+      loginMessage.textContent = userCreated
+        ? "کاربر ایجاد شد. اکنون وارد شوید."
+        : loginError === "required"
+          ? "نام کاربری و رمز عبور را وارد کنید."
+          : "نام کاربری یا رمز عبور صحیح نیست.";
+      loginMessage.hidden = false;
+    }
+  </script>
 </body>
 
 </html>
