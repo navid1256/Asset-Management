@@ -50,7 +50,8 @@ const renderReceiverProfile = () => {
 };
 
 const renderLoggedInUser = async () => {
-    const loggedInUserElement = document.querySelector("#logged-in-username");
+    const loggedInUserElement =
+        document.querySelector("#logged-in-username");
 
     if (!loggedInUserElement) {
         return;
@@ -65,14 +66,43 @@ const renderLoggedInUser = async () => {
         });
 
         if (!response.ok) {
-            loggedInUserElement.textContent = "کاربر وارد نشده";
+            switch (response.status) {
+                case 400:
+                    loggedInUserElement.textContent = "درخواست نامعتبر است";
+                    break;
+
+                case 401:
+                    loggedInUserElement.textContent = "کاربر وارد نشده";
+                    break;
+
+                case 403:
+                    loggedInUserElement.textContent = "دسترسی غیرمجاز است";
+                    break;
+
+                default:
+                    if (response.status >= 500) {
+                        loggedInUserElement.textContent =
+                            "خطایی در سرور رخ داده است";
+                    } else {
+                        loggedInUserElement.textContent =
+                            "دریافت اطلاعات کاربر ناموفق بود";
+                    }
+            }
+
             return;
         }
 
         const data = await response.json();
-        loggedInUserElement.textContent = data.user.fullName || data.user.username;
-    } catch {
-        loggedInUserElement.textContent = "خطا در دریافت کاربر";
+
+        loggedInUserElement.textContent =
+            data.user?.fullName ||
+            data.user?.username ||
+            "نام کاربر مشخص نیست";
+    } catch (error) {
+        console.error("Failed to receive current user:", error);
+
+        loggedInUserElement.textContent =
+            "خطا در ارتباط با سرور";
     }
 };
 

@@ -1,3 +1,4 @@
+<?php require_once dirname(__DIR__, 2) . '/bootstrap/constants.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,14 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets</title>
-    <link rel="stylesheet" href="../../assets/css/assets.css">
+    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/assets.css">
 </head>
 
 <body>
     <header>
         <h1>نرم افزار مدیریت درخواست و ثبت تجهیزات فناوری</h1>
         <div class="user-profile">
-            <img src="../../assets/img/profile-avatar.avif" alt="user profile" class="avatar">
+            <img src="<?= ASSETS_URL ?>/img/profile-avatar.avif" alt="user profile" class="avatar">
             <div class="user-info">
                 <p class="username">
                     <span>تحویل گیرنده :</span>
@@ -25,12 +26,13 @@
             <span>کاربر :</span>
             <span id="logged-in-username">کاربر نامشخص</span>
         </div>
-        <img src="../../assets/img/logo.png" alt="لوگو شرکت">
+        <img src="<?= ASSETS_URL ?>/img/logo.png" alt="لوگو شرکت">
     </header>
 
     <main class="assets-main">
         <section class="asset-actions" aria-label="انتخاب نوع تجهیزات">
-            <button type="button" class="asset-button" data-target-page="../case/case.html">کیس</button>
+            <button type="button" class="asset-button"
+                data-target-page="<?= BASE_URL ?>/pages/case/case.php">کیس</button>
             <button type="button" class="asset-button">هاب USB</button>
             <button type="button" class="asset-button">تونر</button>
             <button type="button" class="asset-button">لپ تاپ</button>
@@ -38,8 +40,8 @@
             <button type="button" class="asset-button">پرینتر و اسکنر</button>
         </section>
     </main>
-    <script src="../../assets/js/user-profile.js"></script>
-    <script src="../../assets/js/assets.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/assets.js"></script>
 </body>
 
 </html>

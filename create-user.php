@@ -2,6 +2,7 @@
 
 session_start();
 
+require_once __DIR__ . '/bootstrap/constants.php';
 require_once __DIR__ . '/bootstrap/database.php';
 require_once __DIR__ . '/libs/lib-auth.php';
 
@@ -13,7 +14,7 @@ $authenticatedUser = $authenticatedUserId > 0
     : null;
 
 if (!$isFirstUser && !$authenticatedUser) {
-    header('Location: pages/normal-login/normal-login.html');
+    header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php');
     exit;
 }
 
@@ -60,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['create_user_csrf'] = bin2hex(random_bytes(32));
 
         if ($isFirstUser) {
-            header('Location: pages/normal-login/normal-login.html?created=1');
+            header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php?created=1');
             exit;
         }
 
@@ -91,19 +92,19 @@ function escape(string $value): string
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ایجاد کاربر</title>
-    <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/login.css">
 </head>
 
 <body>
     <div class="wrapper">
-        <img class="logo" src="assets/img/logo 1024.png" alt="لوگو">
+        <img class="logo" src="<?= ASSETS_URL ?>/img/logo 1024.png" alt="لوگو">
         <h2>ایجاد کاربر</h2>
 
         <?php if ($message !== ''): ?>
             <p role="alert" class="<?= escape($messageType) ?>"><?= escape($message) ?></p>
         <?php endif; ?>
 
-        <form method="post" action="create-user.php">
+        <form method="post" action="<?= BASE_URL ?>/create-user.php">
             <input type="hidden" name="csrf_token" value="<?= escape($_SESSION['create_user_csrf']) ?>">
 
             <div class="input-box">

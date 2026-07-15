@@ -1,14 +1,15 @@
+<?php require_once dirname(__DIR__, 2) . '/bootstrap/constants.php'; ?>
 <!doctype html>
 <html dir="rtl" lang="fa">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ورود  پرسنل معاونت برنامه ریزی و فناوری</title>
-    <link rel="stylesheet" href="../../assets/css/login.css" />
+    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/login.css" />
   </head>
   <body>
     <div class="wrapper">
-      <img class="logo" src="../../assets/img/logo 1024.png" alt="Logo" />
+      <img class="logo" src="<?= ASSETS_URL ?>/img/logo 1024.png" alt="Logo" />
       <h2>ورود</h2>
       <form method="post" id="loginForm">
         <!-- شماره موبایل -->

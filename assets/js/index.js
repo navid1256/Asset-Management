@@ -106,6 +106,6 @@ userInfoForm.addEventListener("submit", (event) => {
     const isSaved = saveUserProfile();
 
     if (isSaved) {
-        window.location.href = "../select-assets/assets.html";
+        window.location.href = userInfoForm.action;
     }
 });

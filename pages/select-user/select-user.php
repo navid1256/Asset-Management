@@ -1,3 +1,4 @@
+<?php require_once dirname(__DIR__, 2) . '/bootstrap/constants.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Info</title>
-    <link rel="stylesheet" href="../../assets/css/select-user.css">
+    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/select-user.css">
 </head>
 
 <body>
@@ -18,9 +19,9 @@
             <span>کاربر :</span>
             <span id="logged-in-username">کاربر نامشخص</span>
         </div>
-        <img src="../../assets/img/logo.png" alt="لوگو شرکت">
+        <img src="<?= ASSETS_URL ?>/img/logo.png" alt="لوگو شرکت">
     </header>
-    <form id="user-info-form" action="../select-assets/assets.html">
+    <form id="user-info-form" action="<?= BASE_URL ?>/pages/select-assets/assets.php">
         <fieldset class="form-section">
             <legend>
                 اطلاعات تحویل گیرنده
@@ -74,8 +75,8 @@
     </form>
 
 
-    <script src="../../assets/js/user-profile.js"></script>
-    <script src="../../assets/js/index.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/index.js"></script>
 </body>
 
 </html>

@@ -1,3 +1,4 @@
+<?php require_once dirname(__DIR__, 2) . '/bootstrap/constants.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,15 +6,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Case Info</title>
-    <link rel="stylesheet" href="../../assets/css/case.css">
-    <link rel="icon" href="../../assets/img/logo.png" type="image">
+    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/case.css">
+    <link rel="icon" href="<?= ASSETS_URL ?>/img/logo.png" type="image">
 </head>
 
 <body>
     <header>
         <h1>نرم افزار مدیریت درخواست و ثبت تجهیزات فناوری</h1>
         <div class="user-profile">
-            <img src="../../assets/img/profile-avatar.avif" alt="user profile" class="avatar">
+            <img src="<?= ASSETS_URL ?>/img/profile-avatar.avif" alt="user profile" class="avatar">
             <div class="user-info">
                 <p class="username">
                     <span>تحویل گیرنده :</span>
@@ -26,9 +27,10 @@
             <span>کاربر :</span>
             <span id="logged-in-username">کاربر نامشخص</span>
         </div>
-        <img src="../../assets/img/logo.png" alt="لوگو شرکت">
+        <img src="<?= ASSETS_URL ?>/img/logo.png" alt="لوگو شرکت">
     </header>
-    <form id="case-info-form" action="case-status.html" method="post" enctype="multipart/form-data">
+    <form id="case-info-form" action="<?= BASE_URL ?>/pages/case/case-status.php" method="post"
+        enctype="multipart/form-data">
         <fieldset class="form-section">
             <legend>
                 ثبت مشخصات تحویلی کیس
@@ -625,8 +627,8 @@
             </div>
         </div>
     </form>
-    <script src="../../assets/js/user-profile.js"></script>
-    <script src="../../assets/js/case.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/case.js"></script>
 
 
 </body>
