@@ -279,6 +279,35 @@ button:active {
     transform: translateY(-1px);
 }
 
+.page-footer {
+    display: flex;
+    direction: ltr;
+    width: 100%;
+    padding: 20px 30px 30px;
+}
+
+.logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+.logout-button {
+    min-width: 120px;
+    padding: 11px 28px;
+    color: #fff;
+    background-color: #111;
+    border: 1px solid #111;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    direction: rtl;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.logout-button:hover {
+    background-color: #000;
+}
+
 /* =========================
    Responsive
    Desktop layout remains unchanged.
@@ -869,6 +898,10 @@ button:active {
     button.submit {
         width: 100%;
         max-width: 320px;
+    }
+
+    .page-footer {
+        padding: 16px 14px 24px;
     }
 }
 

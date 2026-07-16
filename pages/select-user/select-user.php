@@ -74,6 +74,11 @@
         <button type="submit" class="submit">ثبت اطلاعات</button>
     </form>
 
+    <footer class="page-footer">
+        <form class="logout-form" action="<?= BASE_URL ?>/process/logout-handler.php" method="post">
+            <button type="submit" class="logout-button">خروج</button>
+        </form>
+    </footer>
 
     <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
     <script src="<?= ASSETS_URL ?>/js/index.js"></script>
