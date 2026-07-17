@@ -6,18 +6,6 @@ require_once __DIR__ . '/bootstrap/constants.php';
 require_once __DIR__ . '/bootstrap/database.php';
 require_once __DIR__ . '/libs/lib-auth.php';
 
-$userCount = (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
-$isFirstUser = $userCount === 0;
-$authenticatedUserId = (int) ($_SESSION['authenticated_user_id'] ?? 0);
-$authenticatedUser = $authenticatedUserId > 0
-    ? findUserById($pdo, $authenticatedUserId)
-    : null;
-
-if (!$isFirstUser && !$authenticatedUser) {
-    header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php');
-    exit;
-}
-
 if (!isset($_SESSION['create_user_csrf'])) {
     $_SESSION['create_user_csrf'] = bin2hex(random_bytes(32));
 }
@@ -59,11 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
 
         $_SESSION['create_user_csrf'] = bin2hex(random_bytes(32));
-
-        if ($isFirstUser) {
-            header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php?created=1');
-            exit;
-        }
 
         $message = 'کاربر با موفقیت ایجاد شد.';
         $messageType = 'success';
