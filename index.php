@@ -26,9 +26,10 @@
                     onclick="window.location.href='<?= BASE_URL ?>/pages/otp-login/otp-login.php'">ورود با کد OTP</button>
             </div>
             <!-- دکمه خروج -->
-            <button type="submit" name="verify" class="btn">خروج</button>
+            <button type="button" id="close-application" class="btn">خروج</button>
         </form>
     </div>
+    <script src="<?= ASSETS_URL ?>/js/login-option.js"></script>
 </body>
 
 </html>

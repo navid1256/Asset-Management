@@ -35,7 +35,7 @@
                     </div>
                     <div>
                         <label for="family-name">نام خانوادگی :</label>
-                        <input type="text" id="family-name" name="familyName" placeholder="نام ختنوادگی"
+                        <input type="text" id="family-name" name="familyName" placeholder="نام خانوادگی"
                             autocomplete="family-name" pattern="[^0-9۰-۹٠-٩]*" required>
                     </div>
                     <div>
