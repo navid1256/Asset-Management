@@ -111,18 +111,24 @@ function escape(string $value): string
             </div>
 
             <div class="input-box">
-                <input type="password" name="password" placeholder="رمز عبور"
+                <input type="password" id="new-password" name="password" placeholder="رمز عبور"
                     autocomplete="new-password" minlength="8" required>
+                <button type="button" class="password-toggle" data-password-toggle="new-password"
+                    aria-label="نمایش رمز عبور" aria-pressed="false"></button>
             </div>
 
             <div class="input-box">
-                <input type="password" name="password_confirmation" placeholder="تکرار رمز عبور"
+                <input type="password" id="password-confirmation" name="password_confirmation"
+                    placeholder="تکرار رمز عبور"
                     autocomplete="new-password" minlength="8" required>
+                <button type="button" class="password-toggle" data-password-toggle="password-confirmation"
+                    aria-label="نمایش تکرار رمز عبور" aria-pressed="false"></button>
             </div>
 
             <button type="submit" class="btn">ثبت کاربر</button>
         </form>
     </div>
+    <script src="<?= ASSETS_URL ?>/js/password-visibility.js"></script>
 </body>
 
 </html>

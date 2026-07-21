@@ -81,7 +81,7 @@
     </footer>
 
     <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
-    <script src="<?= ASSETS_URL ?>/js/index.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/select-user.js"></script>
 </body>
 
 </html>

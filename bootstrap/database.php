@@ -4,6 +4,7 @@ require_once __DIR__ . '/config.php';
 
 $dsn = "mysql:host={$database_config->host};"
     . "dbname={$database_config->db};"
+    . "port={$database_config->port};"
     . "charset=utf8mb4";
 
 $options = [

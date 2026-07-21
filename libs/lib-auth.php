@@ -64,14 +64,8 @@ function findUserById(PDO $pdo, int $userId): ?array
     return $user ?: null;
 }
 
-function createUser(
-    PDO $pdo,
-    string $nationalId,
-    string $firstName,
-    string $lastName,
-    string $username,
-    string $password
-): int {
+function createUser(PDO $pdo, string $nationalId, string $firstName, string $lastName, string $username, string $password): int 
+{
     $nationalId = trim($nationalId);
     $firstName = trim($firstName);
     $lastName = trim($lastName);

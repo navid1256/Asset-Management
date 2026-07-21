@@ -12,7 +12,7 @@
 <body>
     <div class="wrapper">
         <img class="logo" src="<?= ASSETS_URL ?>/img/logo 1024.png" alt="Logo" />
-        <h2>نرم افزار مدیریت درخواست و ثبت تجهیزات فناوری</h2>
+        <h2>ثبت تجهیزات فناوری</h2>
         <form method="post" id="loginForm">
             <!-- ورود با نام کاربری و رمز عبور -->
             <div class="input-box">

@@ -77,6 +77,52 @@ body::-webkit-scrollbar {
   text-align: right;
 }
 
+.input-box input[type="password"],
+.input-box input[data-password-visible="true"] {
+  padding-left: 56px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: #064b22;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  color: #000;
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.password-toggle svg[hidden] {
+  display: none;
+}
+
 .btn-inside {
   position: absolute;
   left: 0px;

@@ -21,7 +21,9 @@
       </div>
       <!-- پسورد -->
       <div class="input-box">
-        <input type="password" name="password" placeholder="رمز عبور" required />
+        <input type="password" id="login-password" name="password" placeholder="رمز عبور" required />
+        <button type="button" class="password-toggle" data-password-toggle="login-password"
+          aria-label="نمایش رمز عبور" aria-pressed="false"></button>
       </div>
       <!-- دکمه ورود -->
       <button type="submit" name="verify" class="btn">ورود</button>
@@ -42,6 +44,7 @@
       loginMessage.hidden = false;
     }
   </script>
+  <script src="<?= ASSETS_URL ?>/js/password-visibility.js"></script>
 </body>
 
 </html>
