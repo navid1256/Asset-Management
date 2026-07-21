@@ -10,6 +10,7 @@ const allDigitsPattern = /[0-9۰-۹٠-٩]/g;
 const nonDigitPattern = /[^0-9۰-۹٠-٩]/;
 const allNonDigitsPattern = /[^0-9۰-۹٠-٩]/g;
 const nationalCodePattern = /^[0-9۰-۹٠-٩]{10}$/;
+const mobilePattern = /^[0۰٠][9۹٩][0-9۰-۹٠-٩]{9}$/;
 
 const getInputValue = (selector) => {
     const input = document.querySelector(selector);
@@ -76,6 +77,7 @@ const saveUserProfile = () => {
         name: getInputValue("#name"),
         familyName: getInputValue("#family-name"),
         nationalCode: getInputValue("#national-code"),
+        mobile: getInputValue("#mobile"),
         moavenat: getSelectedText("#moavenat"),
         edare: getSelectedText("#edare")
     };
@@ -92,6 +94,11 @@ const saveUserProfile = () => {
 
     if (!nationalCodePattern.test(userProfile.nationalCode)) {
         alert("کد ملی باید دقیقاً ۱۰ رقم باشد.");
+        return false;
+    }
+
+    if (!mobilePattern.test(userProfile.mobile)) {
+        alert("شماره همراه باید ۱۱ رقم و با ۰۹ شروع شود.");
         return false;
     }
 

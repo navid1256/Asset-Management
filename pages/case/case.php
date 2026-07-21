@@ -5,6 +5,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 require_once dirname(__DIR__, 2) . '/bootstrap/constants.php';
 
+if (empty($_SESSION['authenticated_user_id'])) {
+    header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php');
+    exit;
+}
+
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -137,7 +142,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                     <div class="component-footer">
                         <div class="component-upload">
                             <label for="cpu-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="cpu-upload" name="cpu-upload" class="component-file-input"
+                            <input type="file" id="cpu-upload" name="cpu_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
                             <span class="component-file-name" data-file-name-for="cpu-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
@@ -176,10 +181,10 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                     </div>
                     <div class="component-footer">
                         <div class="component-upload">
-                            <label for="cpu-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="cpu-upload" name="cpu_warranty_file" class="component-file-input"
+                            <label for="motherboard-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                            <input type="file" id="motherboard-upload" name="motherboard_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
-                            <span class="component-file-name" data-file-name-for="cpu-upload" aria-live="polite">فایلی
+                            <span class="component-file-name" data-file-name-for="motherboard-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
                     </div>
@@ -229,14 +234,14 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                             <label for="gpu-memory">حافظه :</label>
                             <select id="gpu-memory" name="gpu_memory_gb">
                                 <option value="" disabled selected>Select Memory</option>
-                                <option value="1GB">1GB</option>
-                                <option value="2">2GB</option>
-                                <option value="3">3GB</option>
-                                <option value="4">4GB</option>
-                                <option value="6">6GB</option>
-                                <option value="8">8GB</option>
-                                <option value="10">10GB</option>
-                                <option value="12">12GB</option>
+                                <option value="1 GB">1GB</option>
+                                <option value="2 GB">2GB</option>
+                                <option value="3 GB">3GB</option>
+                                <option value="4 GB">4GB</option>
+                                <option value="6 GB">6GB</option>
+                                <option value="8 GB">8GB</option>
+                                <option value="10 GB">10GB</option>
+                                <option value="12 GB">12GB</option>
                             </select>
                         </div>
                     </div>
@@ -308,7 +313,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                                     <label for="ram-capacity-1">مقدار حافظه :</label>
                                     <select name="ram_capacity_gb[]" id="ram-capacity-1" required>
                                         <option value="" disabled selected>Capacity</option>
-                                        <option value="1GB">1GB</option>
+                                        <option value="1">1GB</option>
                                         <option value="2">2GB</option>
                                         <option value="4">4GB</option>
                                         <option value="6">6GB</option>

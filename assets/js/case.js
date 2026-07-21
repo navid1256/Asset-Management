@@ -63,6 +63,10 @@ const fileUploadFields = [
         inputId: 'power-upload',
         fileNameSelector: '[data-file-name-for="power-upload"]',
     },
+    {
+        inputId: 'case-upload',
+        fileNameSelector: '[data-file-name-for="case-upload"]',
+    },
 ];
 
 function limitNumericInput(inputId, maxLength) {
@@ -108,15 +112,8 @@ function saveCaseStatusByCpuGeneration() {
     }));
 }
 
-function redirectToCaseStatus(event) {
-    event.preventDefault();
-
-    saveCaseStatusByCpuGeneration();
-    window.location.href = caseInfoForm.action;
-}
-
 if (caseInfoForm) {
-    caseInfoForm.addEventListener('submit', redirectToCaseStatus);
+    caseInfoForm.addEventListener('submit', saveCaseStatusByCpuGeneration);
 }
 
 
@@ -220,7 +217,7 @@ function updateTotalRamCapacity() {
         return;
     }
 
-    const ramCapacitySelects = ramSlots.querySelectorAll('select[name="ram-capacity[]"]');
+    const ramCapacitySelects = ramSlots.querySelectorAll('select[name="ram_capacity_gb[]"]');
 
     let totalGB = 0;
 
@@ -236,7 +233,7 @@ function updateTotalStorageCapacity() {
         return;
     }
 
-    const hardCapacitySelects = storageNumber.querySelectorAll('select[name="hard-capacity[]"]');
+    const hardCapacitySelects = storageNumber.querySelectorAll('select[name="storage_capacity_gb[]"]');
 
     let totalGB = 0;
 

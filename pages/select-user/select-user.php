@@ -43,6 +43,11 @@
                         <input type="text" id="national-code" name="nationalCode" placeholder="کد ملی"
                             inputmode="numeric" maxlength="10" pattern="[0-9۰-۹٠-٩]{10}" required>
                     </div>
+                    <div>
+                        <label for="mobile">شماره همراه :</label>
+                        <input type="tel" id="mobile" name="mobile" placeholder="09xxxxxxxxx" inputmode="numeric"
+                            maxlength="11" pattern="[0۰٠][9۹٩][0-9۰-۹٠-٩]{9}" autocomplete="tel" required>
+                    </div>
                 </div>
 
 

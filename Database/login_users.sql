@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS asset_management
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-USE asset_managment;
+USE asset_management;
 
 
 -- =========================================
