@@ -128,7 +128,7 @@ function escape(string $value): string
             <button type="submit" class="btn">ثبت کاربر</button>
         </form>
     </div>
-    <script src="<?= ASSETS_URL ?>/js/password-visibility.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/password-visibility.js?v=<?= filemtime(BASE_PATH . '/assets/js/password-visibility.js') ?>"></script>
 </body>
 
 </html>

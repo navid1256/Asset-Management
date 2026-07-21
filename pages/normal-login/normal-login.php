@@ -44,7 +44,7 @@
       loginMessage.hidden = false;
     }
   </script>
-  <script src="<?= ASSETS_URL ?>/js/password-visibility.js"></script>
+  <script src="<?= ASSETS_URL ?>/js/password-visibility.js?v=<?= filemtime(BASE_PATH . '/assets/js/password-visibility.js') ?>"></script>
 </body>
 
 </html>

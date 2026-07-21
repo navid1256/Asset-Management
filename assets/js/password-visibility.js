@@ -35,8 +35,8 @@ document.querySelectorAll("[data-password-toggle]").forEach((toggleButton) => {
             shouldShowPassword ? "مخفی کردن رمز عبور" : "نمایش رمز عبور"
         );
 
-        showIcon.hidden = shouldShowPassword;
-        hideIcon.hidden = !shouldShowPassword;
+        showIcon.toggleAttribute("hidden", shouldShowPassword);
+        hideIcon.toggleAttribute("hidden", !shouldShowPassword);
         passwordInput.focus({ preventScroll: true });
     });
 });
