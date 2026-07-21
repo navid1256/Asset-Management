@@ -1,4 +1,21 @@
-<?php require_once dirname(__DIR__, 2) . '/bootstrap/constants.php'; ?>
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+require_once dirname(__DIR__, 2) . '/bootstrap/constants.php';
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+$receiverUserId = filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT);
+
+$formSuccess = $_SESSION['case_form_success'] ?? null;
+$formError = $_SESSION['case_form_error'] ?? null;
+
+unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,8 +46,24 @@
         </div>
         <img src="<?= ASSETS_URL ?>/img/logo.png" alt="لوگو شرکت">
     </header>
+    <?php if ($formSuccess): ?>
+        <div class="form-message form-message-success" role="status">
+            <?= htmlspecialchars($formSuccess, ENT_QUOTES, 'UTF-8') ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($formError): ?>
+        <div class="form-message form-message-error" role="alert">
+            <?= htmlspecialchars($formError, ENT_QUOTES, 'UTF-8') ?>
+        </div>
+    <?php endif; ?>
+
     <form id="case-info-form" action="<?= BASE_URL ?>/pages/case/case-status.php" method="post"
         enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token"
+            value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+        <input type="hidden" name="receiver_user_id" id="receiver-user-id"
+            value="<?= $receiverUserId ? (int) $receiverUserId : '' ?>">
         <fieldset class="form-section">
             <legend>
                 ثبت مشخصات تحویلی کیس
@@ -56,48 +89,48 @@
                     <div class="cpu">
                         <div class="cpu brand">
                             <label for="cpu-brand">برند :</label>
-                            <select name="cpu-brand" id="cpu-brand">
-                                <option value="Select Brand" disabled>Select Brand</option>
-                                <option value="0">AMD</option>
-                                <option value="1" selected>INTEL</option>
+                            <select name="cpu_brand" id="cpu-brand" required>
+                                <option value="" disabled>Select Brand</option>
+                                <option value="AMD">AMD</option>
+                                <option value="INTEL" selected>INTEL</option>
                             </select>
                         </div>
                         <div class="cpu gen">
                             <label for="cpu-gen">نسل :</label>
-                            <select name="cpu-gen" id="cpu-gen">
-                                <option value="Select Gen" disabled>Select Gen</option>
-                                <option value="0">Gen 7th</option>
-                                <option value="1">Gen 8th</option>
-                                <option value="2">Gen 9th</option>
-                                <option value="3">Gen 10th</option>
-                                <option value="4">Gen 11th</option>
-                                <option value="5">Gen 12th</option>
-                                <option value="6">Gen 13th</option>
-                                <option value="7">Gen 14th</option>
+                            <select name="cpu_generation" id="cpu-gen" required>
+                                <option value="" disabled selected>Select Gen</option>
+                                <option value="7">Gen 7th</option>
+                                <option value="8">Gen 8th</option>
+                                <option value="9">Gen 9th</option>
+                                <option value="10">Gen 10th</option>
+                                <option value="11">Gen 11th</option>
+                                <option value="12">Gen 12th</option>
+                                <option value="13">Gen 13th</option>
+                                <option value="14">Gen 14th</option>
                             </select>
                         </div>
                         <div class="cpu model">
                             <label for="cpu-model">مدل :</label>
-                            <select name="cpu-model" id="cpu-model">
-                                <option value="Select Model" disabled>Select Model</option>
-                                <option value="84||Core i5-4670">Core i5-4670</option>
-                                <option value="84||Core i5-4670K">Core i5-4670K</option>
-                                <option value="84||Core i5-4690">Core i5-4690</option>
-                                <option value="88||Core i5-4690K">Core i5-4690K</option>
-                                <option value="65||Core i5-5675C">Core i5-5675C</option>
+                            <select name="cpu_model" id="cpu-model" required>
+                                <option value="" disabled selected>Select Model</option>
+                                <option value="Core i5-4670">Core i5-4670</option>
+                                <option value="Core i5-4670K">Core i5-4670K</option>
+                                <option value="Core i5-4690">Core i5-4690</option>
+                                <option value="Core i5-4690K">Core i5-4690K</option>
+                                <option value="Core i5-5675C">Core i5-5675C</option>
                             </select>
                         </div>
                         <div class="cpu speed">
                             <label for="cpu-speed">سرعت :</label>
-                            <select name="cpu-speed" id="cpu-speed">
-                                <option value="Select Speed" disabled>Select Speed</option>
-                                <option value="1.0 Ghz">1.0 Ghz</option>
-                                <option value="1.5 Ghz">1.5 Ghz</option>
-                                <option value="2.0 Ghz">2.0 Ghz</option>
-                                <option value="2.5 Ghz">2.5 Ghz</option>
-                                <option value="3.0 Ghz">3.0 Ghz</option>
-                                <option value="3.5 Ghz">3.5 Ghz</option>
-                                <option value="4.0 Ghz">4.0 Ghz</option>
+                            <select name="cpu_speed_ghz" id="cpu-speed" required>
+                                <option value="" disabled selected>Select Speed</option>
+                                <option value="1.0">1.0 Ghz</option>
+                                <option value="1.5">1.5 Ghz</option>
+                                <option value="2.0">2.0 Ghz</option>
+                                <option value="2.5">2.5 Ghz</option>
+                                <option value="3.0">3.0 Ghz</option>
+                                <option value="3.5">3.5 Ghz</option>
+                                <option value="4.0">4.0 Ghz</option>
                             </select>
                         </div>
                     </div>
@@ -116,39 +149,37 @@
                     <div class="motherboard">
                         <div class="motherboard brand">
                             <label for="motherboard-brand">برند :</label>
-                            <select id="motherboard-brand" name="brand">
-                                <option value="Select Brand" disabled>Select Brand</option>
-                                <option value="0">ASUS</option>
-                                <option value="1" selected>GIGABYTE</option>
-                                <option value="2">Asrock</option>
-                                <option value="3">MSI</option>
-                                <option value="4">EVGA</option>
-                                <option value="5">Biostar</option>
-                                <option value="6">Intel</option>
+                            <select id="motherboard-brand" name="motherboard_brand" required>
+                                <option value="" disabled>Select Brand</option>
+                                <option value="ASUS">ASUS</option>
+                                <option value="GIGABYTE" selected>GIGABYTE</option>
+                                <option value="Asrock">Asrock</option>
+                                <option value="MSI">MSI</option>
+                                <option value="EVGA">EVGA</option>
+                                <option value="Biostar">Biostar</option>
+                                <option value="Intel">Intel</option>
                             </select>
                         </div>
                         <div class="motherboard model">
                             <label for="motherboard-model">مدل :</label>
-                            <select id="motherboard-model" name="model">
-                                <option value="Select MOdel" disabled>Select Model</option>
-                                <option value="0">X-399 E-GAMING</option>
-                                <option value="1" selected>PRIME H310-PLUS R2.0</option>
-                                <option value="2">PRIME H310M-K</option>
-                                <option value="3">B360M-DRAGON S</option>
-                                <option value="4">TUF GAMING Z490-PLUS</option>
-                                <option value="5">TUF GAMING B560M-E</option>
-                                <option value="6">PRIME Z590-V</option>
+                            <select id="motherboard-model" name="motherboard_model" required>
+                                <option value="" disabled>Select Model</option>
+                                <option value="X-399 E-GAMING">X-399 E-GAMING</option>
+                                <option value="PRIME H310-PLUS R2.0" selected>PRIME H310-PLUS R2.0</option>
+                                <option value="PRIME H310M-K">PRIME H310M-K</option>
+                                <option value="B360M-DRAGON S">B360M-DRAGON S</option>
+                                <option value="TUF GAMING Z490-PLUS">TUF GAMING Z490-PLUS</option>
+                                <option value="TUF GAMING B560M-E">TUF GAMING B560M-E</option>
+                                <option value="PRIME Z590-V">PRIME Z590-V</option>
                             </select>
                         </div>
                     </div>
                     <div class="component-footer">
                         <div class="component-upload">
-                            <label for="motherboard-upload" class="component-upload-button">بارگذاری تصویر
-                                گارانتی</label>
-                            <input type="file" id="motherboard-upload" name="motherboard-upload"
-                                class="component-file-input" accept="image/*,.pdf">
-                            <span class="component-file-name" data-file-name-for="motherboard-upload"
-                                aria-live="polite">فایلی
+                            <label for="cpu-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
+                            <input type="file" id="cpu-upload" name="cpu_warranty_file" class="component-file-input"
+                                accept="image/*,.pdf">
+                            <span class="component-file-name" data-file-name-for="cpu-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
                     </div>
@@ -158,54 +189,54 @@
                     <div class="gpu">
                         <div class="gpu option">
                             <div class="gpu-option">
-                                <input type="radio" id="gpu-onboard" name="gpu-type" value="onboard" checked>
+                                <input type="radio" id="gpu-onboard" name="gpu_type" value="onboard" checked>
                                 <label for="gpu-onboard">Onboard</label>
                             </div>
                             <div class="gpu-option">
-                                <input type="radio" id="gpu-internal" name="gpu-type" value="internal">
+                                <input type="radio" id="gpu-internal" name="gpu_type" value="internal">
                                 <label for="gpu-internal">Internal</label>
                             </div>
                         </div>
                         <div class="gpu brand">
                             <label for="gpu-brand">برند :</label>
-                            <select id="gpu-brand" name="brand">
-                                <option value="Select Brand" disabled>Select Brand</option>
-                                <option value="0">ASUS</option>
-                                <option value="1" selected>EVGA</option>
-                                <option value="2">GIGABYTE</option>
-                                <option value="3">MSI</option>
-                                <option value="4">ZOTAK</option>
-                                <option value="5">ASROCK</option>
-                                <option value="6">INTEL</option>
-                                <option value="7">Saphire</option>
+                            <select id="gpu-brand" name="gpu_brand">
+                                <option value="" disabled>Select Brand</option>
+                                <option value="ASUS">ASUS</option>
+                                <option value="EVGA" selected>EVGA</option>
+                                <option value="GIGABYTE">GIGABYTE</option>
+                                <option value="MSI">MSI</option>
+                                <option value="ZOTAK">ZOTAK</option>
+                                <option value="ASROCK">ASROCK</option>
+                                <option value="INTEL">INTEL</option>
+                                <option value="Saphire">Saphire</option>
                             </select>
                         </div>
                         <div class="gpu model">
                             <label for="gpu-model">مدل :</label>
-                            <select id="gpu-model" name="model">
-                                <option value="Select Model" disabled>Select Model</option>
-                                <option value="0">GTX-1080</option>
-                                <option value="1" selected>GTX-1070</option>
-                                <option value="2">GTX-1060</option>
-                                <option value="3">GTX-1050</option>
-                                <option value="4">GTX-1030</option>
-                                <option value="5">GTX-1660</option>
-                                <option value="6">RTX-2070</option>
-                                <option value="7">RTX-2060</option>
+                            <select id="gpu-model" name="gpu_model">
+                                <option value="" disabled>Select Model</option>
+                                <option value="GTX-1080">GTX-1080</option>
+                                <option value="GTX-1070" selected>GTX-1070</option>
+                                <option value="GTX-1060">GTX-1060</option>
+                                <option value="GTX-1050">GTX-1050</option>
+                                <option value="GTX-1030">GTX-1030</option>
+                                <option value="GTX-1660">GTX-1660</option>
+                                <option value="RTX-2070">RTX-2070</option>
+                                <option value="RTX-2060">RTX-2060</option>
                             </select>
                         </div>
                         <div class="gpu memory">
                             <label for="gpu-memory">حافظه :</label>
-                            <select id="gpu-memory" name="memory">
-                                <option value="Select Memory" disabled>Select Memory</option>
-                                <option value="0">1GB</option>
-                                <option value="1">2GB</option>
-                                <option value="2">3GB</option>
-                                <option value="3">4GB</option>
-                                <option value="4">6GB</option>
-                                <option value="5">8GB</option>
-                                <option value="6">10GB</option>
-                                <option value="7">12GB</option>
+                            <select id="gpu-memory" name="gpu_memory_gb">
+                                <option value="" disabled selected>Select Memory</option>
+                                <option value="1GB">1GB</option>
+                                <option value="2">2GB</option>
+                                <option value="3">3GB</option>
+                                <option value="4">4GB</option>
+                                <option value="6">6GB</option>
+                                <option value="8">8GB</option>
+                                <option value="10">10GB</option>
+                                <option value="12">12GB</option>
                             </select>
                         </div>
                     </div>
@@ -213,7 +244,7 @@
                         <div class="component-upload">
                             <label for="gpu-upload" class="component-upload-button">بارگذاری تصویر
                                 گارانتی</label>
-                            <input type="file" id="gpu-upload" name="gpu-upload" class="component-file-input"
+                            <input type="file" id="gpu-upload" name="gpu_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
                             <span class="component-file-name" data-file-name-for="gpu-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
@@ -225,8 +256,8 @@
                     <div class="ram">
                         <div class="ram slot-number">
                             <label for="slot-number">تعداد رم :</label>
-                            <select name="slot-number" id="slot-number">
-                                <option value="Select Number" disabled>Select Number</option>
+                            <select name="ram_count" id="slot-number" required>
+                                <option value="" disabled selected>Select Number</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -237,48 +268,47 @@
                             <div class="ram-row" data-ram-row>
                                 <div class="ram brand">
                                     <label for="ram-brand-1">برند :</label>
-                                    <select id="ram-brand-1" name="ram-brand[]">
-                                        <option value="Select Brand" disabled>Select Brand</option>
-                                        <option value="0">HyperX</option>
-                                        <option value="1">Corsair</option>
-                                        <option value="2">Kingston</option>
-                                        <option value="3">Crucial</option>
-                                        <option value="4">G.Skill</option>
-                                        <option value="5">Samsung</option>
-                                        <option value="6">Team Group</option>
-                                        <option value="7">Patriot</option>
+                                    <select id="ram-brand-1" name="ram_brand[]" required>
+                                        <option value="" disabled selected>Select Brand</option>
+                                        <option value="HyperX">HyperX</option>
+                                        <option value="Corsair">Corsair</option>
+                                        <option value="Kingston">Kingston</option>
+                                        <option value="Crucial">Crucial</option>
+                                        <option value="G.Skill">G.Skill</option>
+                                        <option value="Samsung">Samsung</option>
+                                        <option value="Team Group">Team Group</option>
+                                        <option value="Patriot">Patriot</option>
                                     </select>
                                 </div>
                                 <div class="ram model">
                                     <label for="ram-model-1">مدل :</label>
-                                    <select id="ram-model-1" name="ram-model[]">
-                                        <option value="Select Model" disabled>Select Model</option>
-                                        <option value="0">FURY Beast</option>
-                                        <option value="1">Vengeance</option>
-                                        <option value="2">Vengeance LPX</option>
-                                        <option value="3">Trident Z5 Neo RGB</option>
-                                        <option value="4">Trident Z5 RGB</option>
-                                        <option value="5">T-Force Xtreem ARGB</option>
-                                        <option value="6">Viper Steel</option>
-                                        <option value="8">Viper 4</option>
-                                        <option value="9">Viper RGB</option>
-                                        <option value="10">Aegis</option>
+                                    <select id="ram-model-1" name="ram_model[]" required>
+                                        <option value="" disabled selected>Select Model</option>
+                                        <option value="FURY Beast">FURY Beast</option>
+                                        <option value="Vengeance">Vengeance</option>
+                                        <option value="Vengeance LPX">Vengeance LPX</option>
+                                        <option value="Trident Z5 Neo RGB">Trident Z5 Neo RGB</option>
+                                        <option value="Trident Z5 RGB">Trident Z5 RGB</option>
+                                        <option value="T-Force Xtreem ARGB">T-Force Xtreem ARGB</option>
+                                        <option value="Viper Steel">Viper Steel</option>
+                                        <option value="Viper 4">Viper 4</option>
+                                        <option value="Viper RGB">Viper RGB</option>
+                                        <option value="Aegis">Aegis</option>
                                     </select>
                                 </div>
                                 <div class="ram module">
                                     <label for="ram-module-1">ماژول حافظه :</label>
-                                    <select id="ram-module-1" name="ram-module[]">
-                                        <option value="Select Module" disabled>Module</option>
-                                        <option value="0">DDR4</option>
-                                        <option value="1">DDR5</option>
+                                    <select id="ram-module-1" name="ram_type[]" required>
+                                        <option value="" disabled selected>Module</option>
+                                        <option value="DDR4">DDR4</option>
+                                        <option value="DDR5">DDR5</option>
                                     </select>
                                 </div>
                                 <div class="ram capacity">
                                     <label for="ram-capacity-1">مقدار حافظه :</label>
-                                    <select name="ram-capacity[]" id="ram-capacity-1">
-                                        <option value="Select Module" disabled>Capacity</option>
-                                        <option value="">Capacity</option>
-                                        <option value="1">1GB</option>
+                                    <select name="ram_capacity_gb[]" id="ram-capacity-1" required>
+                                        <option value="" disabled selected>Capacity</option>
+                                        <option value="1GB">1GB</option>
                                         <option value="2">2GB</option>
                                         <option value="4">4GB</option>
                                         <option value="6">6GB</option>
@@ -288,8 +318,8 @@
                                 </div>
                                 <div class="ram speed">
                                     <label for="memory-speed-1">سرعت حافظه :</label>
-                                    <input type="number" id="memory-speed-1" name="memory-speed[]" min="0" step="1"
-                                        placeholder="MHz">
+                                    <input type="number" id="memory-speed-1" name="ram_speed_mhz[]" min="0" step="1"
+                                        placeholder="MHz" required>
                                     <span class="speed-unit">MHz</span>
                                 </div>
                             </div>
@@ -298,7 +328,7 @@
                     <div class="component-footer">
                         <div class="component-upload">
                             <label for="ram-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="ram-upload" name="ram-upload" class="component-file-input"
+                            <input type="file" id="ram-upload" name="ram_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
                             <span class="component-file-name" data-file-name-for="ram-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
@@ -306,7 +336,7 @@
 
                         <div class="component-total">
                             <span>ظرفیت کل RAM :</span>
-                            <output id="total-ram-capacity" name="total-ram-capacity">0GB</output>
+                            <output id="total-ram-capacity">0GB</output>
                         </div>
                     </div>
                 </section>
@@ -315,8 +345,8 @@
                     <div class="storage">
                         <div class="hard number">
                             <label for="hard-number">تعداد هارد ها :</label>
-                            <select name="hard-number" id="hard-number">
-                                <option value="Select Number" disabled>Select Number</option>
+                            <select name="storage_count" id="hard-number" required>
+                                <option value="" disabled selected>Select Number</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -326,89 +356,88 @@
                             <div class="hard-row" data-hard-row>
                                 <div class="hard type">
                                     <label for="hard-type-1">نوع :</label>
-                                    <select id="hard-type-1" name="hard-type[]">
-                                        <option value="Select Type" disabled>Select Type</option>
-                                        <option value="0">NVMe</option>
-                                        <option value="1">M.2 SATA</option>
-                                        <option value="2">SATA</option>
+                                    <select id="hard-type-1" name="storage_type[]" required>
+                                        <option value="" disabled selected>Select Type</option>
+                                        <option value="NVMe">NVMe</option>
+                                        <option value="M.2 SATA">M.2 SATA</option>
+                                        <option value="SATA">SATA</option>
                                     </select>
                                 </div>
                                 <div class="hard brand">
                                     <label for="hard-brand-1">برند :</label>
-                                    <select id="hard-brand-1" name="hard-brand[]">
-                                        <option value="Select Brand" disabled>Select Brand</option>
-                                        <option value="western-digital">Western Digital</option>
-                                        <option value="seagate">Seagate</option>
-                                        <option value="samsung">Samsung</option>
-                                        <option value="kingston">Kingston</option>
-                                        <option value="crucial">Crucial</option>
-                                        <option value="adata">ADATA</option>
-                                        <option value="lexar">Lexar</option>
-                                        <option value="sandisk">SanDisk</option>
-                                        <option value="toshiba">Toshiba</option>
-                                        <option value="kioxia">Kioxia</option>
-                                        <option value="team-group">Team Group</option>
-                                        <option value="patriot">Patriot</option>
-                                        <option value="corsair">Corsair</option>
-                                        <option value="silicon-power">Silicon Power</option>
-                                        <option value="hp">HP</option>
+                                    <select id="hard-brand-1" name="storage_brand[]" required>
+                                        <option value="" disabled selected>Select Brand</option>
+                                        <option value="Western Digital">Western Digital</option>
+                                        <option value="Seagate">Seagate</option>
+                                        <option value="Samsung">Samsung</option>
+                                        <option value="Kingston">Kingston</option>
+                                        <option value="Crucial">Crucial</option>
+                                        <option value="ADATA">ADATA</option>
+                                        <option value="Lexar">Lexar</option>
+                                        <option value="SanDisk">SanDisk</option>
+                                        <option value="Toshiba">Toshiba</option>
+                                        <option value="Kioxia">Kioxia</option>
+                                        <option value="Team Group">Team Group</option>
+                                        <option value="Patriot">Patriot</option>
+                                        <option value="Corsair">Corsair</option>
+                                        <option value="Silicon Power">Silicon Power</option>
+                                        <option value="HP">HP</option>
                                     </select>
                                 </div>
                                 <div class="hard model">
                                     <label for="hard-model-1">مدل :</label>
-                                    <select id="hard-model-1" name="hard-model[]">
-                                        <option value="Select Model" disabled>Select Model</option>
-                                        <option value="wd-blue">WD Blue</option>
-                                        <option value="wd-green">WD Green</option>
-                                        <option value="wd-black-sn750">WD Black SN750</option>
-                                        <option value="wd-black-sn770">WD Black SN770</option>
-                                        <option value="wd-black-sn850x">WD Black SN850X</option>
-                                        <option value="wd-red-plus">WD Red Plus</option>
-                                        <option value="seagate-barracuda">Seagate BarraCuda</option>
-                                        <option value="seagate-firecuda">Seagate FireCuda</option>
-                                        <option value="seagate-ironwolf">Seagate IronWolf</option>
-                                        <option value="samsung-860-evo">Samsung 860 EVO</option>
-                                        <option value="samsung-870-evo">Samsung 870 EVO</option>
-                                        <option value="samsung-970-evo-plus">Samsung 970 EVO Plus</option>
-                                        <option value="samsung-980">Samsung 980</option>
-                                        <option value="samsung-980-pro">Samsung 980 PRO</option>
-                                        <option value="samsung-990-pro">Samsung 990 PRO</option>
-                                        <option value="kingston-a400">Kingston A400</option>
-                                        <option value="kingston-nv2">Kingston NV2</option>
-                                        <option value="kingston-kc3000">Kingston KC3000</option>
-                                        <option value="crucial-bx500">Crucial BX500</option>
-                                        <option value="crucial-mx500">Crucial MX500</option>
-                                        <option value="crucial-p3">Crucial P3</option>
-                                        <option value="crucial-p5-plus">Crucial P5 Plus</option>
-                                        <option value="adata-su650">ADATA SU650</option>
-                                        <option value="adata-legend-800">ADATA Legend 800</option>
-                                        <option value="xpg-sx8200-pro">XPG SX8200 Pro</option>
-                                        <option value="lexar-nm620">Lexar NM620</option>
-                                        <option value="lexar-nm710">Lexar NM710</option>
-                                        <option value="lexar-nm790">Lexar NM790</option>
-                                        <option value="sandisk-ssd-plus">SanDisk SSD Plus</option>
-                                        <option value="sandisk-ultra-3d">SanDisk Ultra 3D</option>
-                                        <option value="toshiba-p300">Toshiba P300</option>
-                                        <option value="toshiba-x300">Toshiba X300</option>
-                                        <option value="kioxia-exceria">Kioxia Exceria</option>
-                                        <option value="teamgroup-gx2">Team Group GX2</option>
-                                        <option value="teamgroup-mp33">Team Group MP33</option>
-                                        <option value="teamgroup-mp44">Team Group MP44</option>
-                                        <option value="patriot-burst-elite">Patriot Burst Elite</option>
-                                        <option value="patriot-p300">Patriot P300</option>
-                                        <option value="corsair-mp510">Corsair MP510</option>
-                                        <option value="corsair-mp600">Corsair MP600</option>
-                                        <option value="silicon-power-a55">Silicon Power A55</option>
-                                        <option value="silicon-power-p34a60">Silicon Power P34A60</option>
-                                        <option value="hp-s700">HP S700</option>
-                                        <option value="hp-ex900">HP EX900</option>
+                                    <select id="hard-model-1" name="storage_model[]" required>
+                                        <option value="" disabled selected>Select Model</option>
+                                        <option value="WD Blue">WD Blue</option>
+                                        <option value="WD Green">WD Green</option>
+                                        <option value="WD Black SN750">WD Black SN750</option>
+                                        <option value="WD Black SN770">WD Black SN770</option>
+                                        <option value="WD Black SN850X">WD Black SN850X</option>
+                                        <option value="WD Red Plus">WD Red Plus</option>
+                                        <option value="Seagate BarraCuda">Seagate BarraCuda</option>
+                                        <option value="Seagate FireCuda">Seagate FireCuda</option>
+                                        <option value="Seagate IronWolf">Seagate IronWolf</option>
+                                        <option value="Samsung 860 EVO">Samsung 860 EVO</option>
+                                        <option value="Samsung 870 EVO">Samsung 870 EVO</option>
+                                        <option value="Samsung 970 EVO Plus">Samsung 970 EVO Plus</option>
+                                        <option value="Samsung 980">Samsung 980</option>
+                                        <option value="Samsung 980 PRO">Samsung 980 PRO</option>
+                                        <option value="Samsung 990 PRO">Samsung 990 PRO</option>
+                                        <option value="Kingston A400">Kingston A400</option>
+                                        <option value="Kingston NV2">Kingston NV2</option>
+                                        <option value="Kingston KC3000">Kingston KC3000</option>
+                                        <option value="Crucial BX500">Crucial BX500</option>
+                                        <option value="Crucial MX500">Crucial MX500</option>
+                                        <option value="Crucial P3">Crucial P3</option>
+                                        <option value="Crucial P5 Plus">Crucial P5 Plus</option>
+                                        <option value="ADATA SU650">ADATA SU650</option>
+                                        <option value="ADATA Legend 800">ADATA Legend 800</option>
+                                        <option value="XPG SX8200 Pro">XPG SX8200 Pro</option>
+                                        <option value="Lexar NM620">Lexar NM620</option>
+                                        <option value="Lexar NM710">Lexar NM710</option>
+                                        <option value="Lexar NM790">Lexar NM790</option>
+                                        <option value="SanDisk SSD Plus">SanDisk SSD Plus</option>
+                                        <option value="SanDisk Ultra 3D">SanDisk Ultra 3D</option>
+                                        <option value="Toshiba P300">Toshiba P300</option>
+                                        <option value="Toshiba X300">Toshiba X300</option>
+                                        <option value="Kioxia Exceria">Kioxia Exceria</option>
+                                        <option value="Team Group GX2">Team Group GX2</option>
+                                        <option value="Team Group MP33">Team Group MP33</option>
+                                        <option value="Team Group MP44">Team Group MP44</option>
+                                        <option value="Patriot Burst Elite">Patriot Burst Elite</option>
+                                        <option value="Patriot P300">Patriot P300</option>
+                                        <option value="Corsair MP510">Corsair MP510</option>
+                                        <option value="Corsair MP600">Corsair MP600</option>
+                                        <option value="Silicon Power A55">Silicon Power A55</option>
+                                        <option value="Silicon Power P34A60">Silicon Power P34A60</option>
+                                        <option value="HP S700">HP S700</option>
+                                        <option value="HP EX900">HP EX900</option>
                                     </select>
                                 </div>
                                 <div class="hard capacity">
                                     <label for="hard-capacity-1">ظرفیت :</label>
-                                    <select name="hard-capacity[]" id="hard-capacity-1">
-                                        <option value="Select Module" disabled>Capacity</option>
-                                        <option value="">Capacity</option>
+                                    <select name="storage_capacity_gb[]" id="hard-capacity-1" required>
+                                        <option value="" disabled selected>Capacity</option>
                                         <option value="125">125GB</option>
                                         <option value="256">256GB</option>
                                         <option value="512">512GB</option>
@@ -426,7 +455,7 @@
                     <div class="component-footer">
                         <div class="component-upload">
                             <label for="storage-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="storage-upload" name="storage-upload" class="component-file-input"
+                            <input type="file" id="storage-upload" name="storage_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
                             <span class="component-file-name" data-file-name-for="storage-upload"
                                 aria-live="polite">فایلی انتخاب نشده</span>
@@ -434,24 +463,24 @@
 
                         <div class="component-total">
                             <span>ظرفیت کل Storage :</span>
-                            <output id="total-storage-capacity" name="total-storage-capacity">0GB</output>
+                            <output id="total-storage-capacity">0GB</output>
                         </div>
                     </div>
                 </section>
                 <section class="component">
                     <label class="dvd-writer-toggle" for="dvd-writer-enabled">
-                        <input type="checkbox" id="dvd-writer-enabled">
+                        <input type="checkbox" id="dvd-writer-enabled" name="writer_enabled" value="1">
                         <h2>Writer</h2>
                     </label>
 
                     <div class="dvd-writer dvd-writer-section">
                         <div class="writer-option">
                             <div class="cd-writer">
-                                <input type="radio" id="cd-writer" name="writer-type" value="CD Writer" checked>
+                                <input type="radio" id="cd-writer" name="writer_type" value="CD Writer" checked>
                                 <label for="cd-writer">CD Writer</label>
                             </div>
                             <div class="dvd-writer">
-                                <input type="radio" id="dvd-writer" name="writer-type" value="DVD Writer">
+                                <input type="radio" id="dvd-writer" name="writer_type" value="DVD Writer">
                                 <label for="dvd-writer">DVD Writer</label>
                             </div>
                         </div>
@@ -459,45 +488,45 @@
                             <div class="dvd-writer-row" data-dvd-writer-row>
                                 <div class="dvd-writer brand">
                                     <label for="dvd-writer-brand-1">Brand</label>
-                                    <select name="dvd-writer-brand[]" id="dvd-writer-brand-1">
-                                        <option value="Select Brand" disabled>Select Brand</option>
-                                        <option value="asus">ASUS</option>
-                                        <option value="lg">LG</option>
-                                        <option value="lite-on">Lite-On</option>
-                                        <option value="pioneer">Pioneer</option>
-                                        <option value="sony-optiarc">Sony Optiarc</option>
-                                        <option value="samsung">Samsung</option>
-                                        <option value="hp">HP</option>
-                                        <option value="dell">Dell</option>
-                                        <option value="lenovo">Lenovo</option>
-                                        <option value="plextor">Plextor</option>
+                                    <select name="writer_brand[]" id="dvd-writer-brand-1">
+                                        <option value="" disabled selected>Select Brand</option>
+                                        <option value="ASUS">ASUS</option>
+                                        <option value="LG">LG</option>
+                                        <option value="Lite-On">Lite-On</option>
+                                        <option value="Pioneer">Pioneer</option>
+                                        <option value="Sony Optiarc">Sony Optiarc</option>
+                                        <option value="Samsung">Samsung</option>
+                                        <option value="HP">HP</option>
+                                        <option value="Dell">Dell</option>
+                                        <option value="Lenovo">Lenovo</option>
+                                        <option value="Plextor">Plextor</option>
                                     </select>
 
                                 </div>
                                 <div class="dvd-writer model">
                                     <label for="dvd-writer-model-1">Model</label>
-                                    <select name="dvd-writer-model[]" id="dvd-writer-model-1">
-                                        <option value="Select Model" disabled>Select Model</option>
-                                        <option value="asus-drw-24d5mt">ASUS DRW-24D5MT</option>
-                                        <option value="asus-drw-24f1st">ASUS DRW-24F1ST</option>
-                                        <option value="asus-drw-24b1st">ASUS DRW-24B1ST</option>
-                                        <option value="lg-gh24nsc0">LG GH24NSC0</option>
-                                        <option value="lg-gh24nscd">LG GH24NSD5</option>
-                                        <option value="lg-gh24nsd1">LG GH24NSD1</option>
-                                        <option value="lite-on-ihas124">Lite-On iHAS124</option>
-                                        <option value="lite-on-ihas324">Lite-On iHAS324</option>
-                                        <option value="pioneer-dvr-221bk">Pioneer DVR-221BK</option>
-                                        <option value="pioneer-dvr-s21wbk">Pioneer DVR-S21WBK</option>
-                                        <option value="sony-optiarc-ad-7280s">Sony Optiarc AD-7280S</option>
-                                        <option value="sony-optiarc-ad-7260s">Sony Optiarc AD-7260S</option>
-                                        <option value="samsung-sh-224db">Samsung SH-224DB</option>
-                                        <option value="samsung-sh-224fb">Samsung SH-224FB</option>
-                                        <option value="hp-dh16acsh">HP DH16ACSH</option>
-                                        <option value="hp-gh60l">HP GH60L</option>
-                                        <option value="dell-dw316">Dell DW316</option>
-                                        <option value="dell-gta0n">Dell GTA0N</option>
-                                        <option value="lenovo-gue0n">Lenovo GUE0N</option>
-                                        <option value="plextor-px-891sa">Plextor PX-891SA</option>
+                                    <select name="writer_model[]" id="dvd-writer-model-1">
+                                        <option value="" disabled selected>Select Model</option>
+                                        <option value="ASUS DRW-24D5MT">ASUS DRW-24D5MT</option>
+                                        <option value="ASUS DRW-24F1ST">ASUS DRW-24F1ST</option>
+                                        <option value="ASUS DRW-24B1ST">ASUS DRW-24B1ST</option>
+                                        <option value="LG GH24NSC0">LG GH24NSC0</option>
+                                        <option value="LG GH24NSD5">LG GH24NSD5</option>
+                                        <option value="LG GH24NSD1">LG GH24NSD1</option>
+                                        <option value="Lite-On iHAS124">Lite-On iHAS124</option>
+                                        <option value="Lite-On iHAS324">Lite-On iHAS324</option>
+                                        <option value="Pioneer DVR-221BK">Pioneer DVR-221BK</option>
+                                        <option value="Pioneer DVR-S21WBK">Pioneer DVR-S21WBK</option>
+                                        <option value="Sony Optiarc AD-7280S">Sony Optiarc AD-7280S</option>
+                                        <option value="Sony Optiarc AD-7260S">Sony Optiarc AD-7260S</option>
+                                        <option value="Samsung SH-224DB">Samsung SH-224DB</option>
+                                        <option value="Samsung SH-224FB">Samsung SH-224FB</option>
+                                        <option value="HP DH16ACSH">HP DH16ACSH</option>
+                                        <option value="HP GH60L">HP GH60L</option>
+                                        <option value="Dell DW316">Dell DW316</option>
+                                        <option value="Dell GTA0N">Dell GTA0N</option>
+                                        <option value="Lenovo GUE0N">Lenovo GUE0N</option>
+                                        <option value="Plextor PX-891SA">Plextor PX-891SA</option>
                                     </select>
 
                                 </div>
@@ -507,7 +536,7 @@
                     <div class="component-footer">
                         <div class="component-upload">
                             <label for="writer-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="writer-upload" name="writer-upload" class="component-file-input"
+                            <input type="file" id="writer-upload" name="writer_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
                             <span class="component-file-name" data-file-name-for="writer-upload"
                                 aria-live="polite">فایلی انتخاب نشده</span>
@@ -519,51 +548,51 @@
                     <div class="power">
                         <div class="power brand">
                             <label for="power-brand">برند :</label>
-                            <select name="power-brand" id="power-brand">
-                                <option value="Select Brand" disabled>Select Brand</option>
-                                <option value="0">Corsair</option>
-                                <option value="1">EVGA</option>
-                                <option value="2">Seasonic</option>
-                                <option value="3">Cooler Master</option>
-                                <option value="4">Thermaltake</option>
-                                <option value="5">be quiet!</option>
-                                <option value="6">NZXT</option>
-                                <option value="7">Antec</option>
+                            <select name="power_brand" id="power-brand" required>
+                                <option value="" disabled selected>Select Brand</option>
+                                <option value="Corsair">Corsair</option>
+                                <option value="EVGA">EVGA</option>
+                                <option value="Seasonic">Seasonic</option>
+                                <option value="Cooler Master">Cooler Master</option>
+                                <option value="Thermaltake">Thermaltake</option>
+                                <option value="be quiet!">be quiet!</option>
+                                <option value="NZXT">NZXT</option>
+                                <option value="Antec">Antec</option>
                             </select>
                         </div>
                         <div class="power model">
                             <label for="power-model">مدل :</label>
-                            <select name="power-model" id="power-model">
-                                <option value="Select Model" disabled>Select Model</option>
-                                <option value="0">RM750x</option>
-                                <option value="1">RM850x</option>
-                                <option value="2">RM1000x</option>
-                                <option value="3">SuperNOVA 750 G5</option>
-                                <option value="4">SuperNOVA 850 G5</option>
-                                <option value="5">SuperNOVA 1000 G5</option>
-                                <option value="6">Focus GX-750</option>
-                                <option value="7">Focus GX-850</option>
+                            <select name="power_model" id="power-model" required>
+                                <option value="" disabled selected>Select Model</option>
+                                <option value="RM750x">RM750x</option>
+                                <option value="RM850x">RM850x</option>
+                                <option value="RM1000x">RM1000x</option>
+                                <option value="SuperNOVA 750 G5">SuperNOVA 750 G5</option>
+                                <option value="SuperNOVA 850 G5">SuperNOVA 850 G5</option>
+                                <option value="SuperNOVA 1000 G5">SuperNOVA 1000 G5</option>
+                                <option value="Focus GX-750">Focus GX-750</option>
+                                <option value="Focus GX-850">Focus GX-850</option>
                             </select>
                         </div>
                         <div class="power wattage">
                             <label for="power-wattage">توان :</label>
-                            <select name="power-wattage" id="power-wattage">
-                                <option value="Select Wattage" disabled>Select Wattage</option>
-                                <option value="0">500W</option>
-                                <option value="1">600W</option>
-                                <option value="2">650W</option>
-                                <option value="3">700W</option>
-                                <option value="4">750W</option>
-                                <option value="5">800W</option>
-                                <option value="6">850W</option>
-                                <option value="7">1000W</option>
+                            <select name="power_wattage_w" id="power-wattage" required>
+                                <option value="" disabled selected>Select Wattage</option>
+                                <option value="500">500W</option>
+                                <option value="600">600W</option>
+                                <option value="650">650W</option>
+                                <option value="700">700W</option>
+                                <option value="750">750W</option>
+                                <option value="800">800W</option>
+                                <option value="850">850W</option>
+                                <option value="1000">1000W</option>
                             </select>
                         </div>
                     </div>
                     <div class="component-footer">
                         <div class="component-upload">
                             <label for="power-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="power-upload" name="power-upload" class="component-file-input"
+                            <input type="file" id="power-upload" name="power_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
                             <span class="component-file-name" data-file-name-for="power-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
@@ -575,43 +604,44 @@
                     <div class="case">
                         <div class="case brand">
                             <label for="case-brand">برند :</label>
-                            <select name="case-brand" id="case-brand">
-                                <option value="Select Brand" disabled>Select Brand</option>
-                                <option value="0">Corsair</option>
-                                <option value="1">EVGA</option>
-                                <option value="2">Seasonic</option>
-                                <option value="3">Cooler Master</option>
-                                <option value="4">Thermaltake</option>
-                                <option value="5">be quiet!</option>
-                                <option value="6">NZXT</option>
-                                <option value="7">Antec</option>
+                            <select name="case_brand" id="case-brand" required>
+                                <option value="" disabled selected>Select Brand</option>
+                                <option value="Corsair">Corsair</option>
+                                <option value="EVGA">EVGA</option>
+                                <option value="Seasonic">Seasonic</option>
+                                <option value="Cooler Master">Cooler Master</option>
+                                <option value="Thermaltake">Thermaltake</option>
+                                <option value="be quiet!">be quiet!</option>
+                                <option value="NZXT">NZXT</option>
+                                <option value="Antec">Antec</option>
                             </select>
                         </div>
                         <div class="case model">
                             <label for="case-model">مدل :</label>
-                            <select name="case-model" id="case-model">
-                                <option value="Select Model" disabled>Select Model</option>
-                                <option value="0">RM750x</option>
-                                <option value="1">RM850x</option>
-                                <option value="2">RM1000x</option>
-                                <option value="3">SuperNOVA 750 G5</option>
-                                <option value="4">SuperNOVA 850 G5</option>
-                                <option value="5">SuperNOVA 1000 G5</option>
-                                <option value="6">Focus GX-750</option>
-                                <option value="7">Focus GX-850</option>
+                            <select name="case_model" id="case-model" required>
+                                <option value="" disabled selected>Select Model</option>
+                                <option value="RM750x">RM750x</option>
+                                <option value="RM850x">RM850x</option>
+                                <option value="RM1000x">RM1000x</option>
+                                <option value="SuperNOVA 750 G5">SuperNOVA 750 G5</option>
+                                <option value="SuperNOVA 850 G5">SuperNOVA 850 G5</option>
+                                <option value="SuperNOVA 1000 G5">SuperNOVA 1000 G5</option>
+                                <option value="Focus GX-750">Focus GX-750</option>
+                                <option value="Focus GX-850">Focus GX-850</option>
                             </select>
                         </div>
                     </div>
                     <div class="component-footer">
                         <div class="component-upload">
                             <label for="case-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="case-upload" name="case-upload" class="component-file-input"
+                            <input type="file" id="case-upload" name="case_warranty_file" class="component-file-input"
                                 accept="image/*,.pdf">
                             <span class="component-file-name" data-file-name-for="case-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
                     </div>
                 </section>
+            </section>
             </section>
 
 
