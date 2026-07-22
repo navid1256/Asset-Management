@@ -29,6 +29,10 @@
       <button type="submit" name="verify" class="btn">ورود</button>
     </form>
   </div>
+  <button type="button" class="back-button" onclick="window.history.back()" aria-label="بازگشت به صفحه قبل">
+    <span aria-hidden="true">&larr;</span>
+    <span>بازگشت</span>
+  </button>
   <script>
     const loginError = new URLSearchParams(window.location.search).get("error");
     const loginMessage = document.getElementById("login-message");

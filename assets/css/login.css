@@ -174,6 +174,41 @@ body::-webkit-scrollbar {
   width: 120px;
 }
 
+.back-button {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 110px;
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #000000;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+  background: #000000;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.back-button:focus-visible {
+  outline: 2px solid #064b22;
+  outline-offset: 3px;
+}
+
 @media (max-width: 480px) {
   .wrapper {
     width: 95vw;
