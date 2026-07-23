@@ -52,10 +52,6 @@ const fileUploadFields = [
         fileNameSelector: '[data-file-name-for="ram-upload"]',
     },
     {
-        inputId: 'storage-upload',
-        fileNameSelector: '[data-file-name-for="storage-upload"]',
-    },
-    {
         inputId: 'writer-upload',
         fileNameSelector: '[data-file-name-for="writer-upload"]',
     },
@@ -303,6 +299,19 @@ function updateFileName(inputElement, fileNameElement) {
     fileNameElement.title = inputElement.files[0] ? fileName : '';
 }
 
+function updateStorageWarrantyFileName(event) {
+    const inputElement = event.target;
+
+    if (!inputElement.matches('.storage-warranty-input')) {
+        return;
+    }
+
+    const uploadContainer = inputElement.closest('.hard-warranty');
+    const fileNameElement = uploadContainer?.querySelector('[data-storage-file-name]');
+
+    updateFileName(inputElement, fileNameElement);
+}
+
 function bindFileUpload({ inputId, fileNameSelector }) {
     const inputElement = document.getElementById(inputId);
     const fileNameElement = document.querySelector(fileNameSelector);
@@ -343,6 +352,7 @@ hardNumberSelect.addEventListener('change', renderHardRows);
 
 ramSlots.addEventListener('change', updateTotalRamCapacity);
 storageNumber.addEventListener('change', updateTotalStorageCapacity);
+storageNumber.addEventListener('change', updateStorageWarrantyFileName);
 
 dvdWriterEnabled.addEventListener('change', toggleDVDWriterSection);
 

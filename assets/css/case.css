@@ -448,6 +448,20 @@ div.ram.model select {
     justify-content: flex-start;
 }
 
+.hard-row>.hard.warranty {
+    flex: 0 0 100%;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.hard-warranty {
+    width: 100%;
+}
+
+.component-footer.storage-footer {
+    justify-content: flex-end;
+}
+
 div.hard.number {
     position: absolute;
     top: 15px;

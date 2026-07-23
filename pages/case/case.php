@@ -97,9 +97,9 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="cpu brand">
                             <label for="cpu-brand">برند :</label>
                             <select name="cpu_brand" id="cpu-brand" required>
-                                <option value="" disabled>Select Brand</option>
+                                <option value="" disabled selected>Select Brand</option>
                                 <option value="AMD">AMD</option>
-                                <option value="INTEL" selected>INTEL</option>
+                                <option value="INTEL">INTEL</option>
                             </select>
                         </div>
                         <div class="cpu gen">
@@ -157,9 +157,9 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="motherboard brand">
                             <label for="motherboard-brand">برند :</label>
                             <select id="motherboard-brand" name="motherboard_brand" required>
-                                <option value="" disabled>Select Brand</option>
+                                <option value="" disabled selected>Select Brand</option>
                                 <option value="ASUS">ASUS</option>
-                                <option value="GIGABYTE" selected>GIGABYTE</option>
+                                <option value="GIGABYTE">GIGABYTE</option>
                                 <option value="Asrock">Asrock</option>
                                 <option value="MSI">MSI</option>
                                 <option value="EVGA">EVGA</option>
@@ -170,9 +170,9 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="motherboard model">
                             <label for="motherboard-model">مدل :</label>
                             <select id="motherboard-model" name="motherboard_model" required>
-                                <option value="" disabled>Select Model</option>
+                                <option value="" disabled selected>Select Model</option>
                                 <option value="X-399 E-GAMING">X-399 E-GAMING</option>
-                                <option value="PRIME H310-PLUS R2.0" selected>PRIME H310-PLUS R2.0</option>
+                                <option value="PRIME H310-PLUS R2.0">PRIME H310-PLUS R2.0</option>
                                 <option value="PRIME H310M-K">PRIME H310M-K</option>
                                 <option value="B360M-DRAGON S">B360M-DRAGON S</option>
                                 <option value="TUF GAMING Z490-PLUS">TUF GAMING Z490-PLUS</option>
@@ -207,9 +207,9 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="gpu brand">
                             <label for="gpu-brand">برند :</label>
                             <select id="gpu-brand" name="gpu_brand">
-                                <option value="" disabled>Select Brand</option>
+                                <option value="" disabled selected>Select Brand</option>
                                 <option value="ASUS">ASUS</option>
-                                <option value="EVGA" selected>EVGA</option>
+                                <option value="EVGA">EVGA</option>
                                 <option value="GIGABYTE">GIGABYTE</option>
                                 <option value="MSI">MSI</option>
                                 <option value="ZOTAK">ZOTAK</option>
@@ -221,9 +221,9 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="gpu model">
                             <label for="gpu-model">مدل :</label>
                             <select id="gpu-model" name="gpu_model">
-                                <option value="" disabled>Select Model</option>
+                                <option value="" disabled selected>Select Model</option>
                                 <option value="GTX-1080">GTX-1080</option>
-                                <option value="GTX-1070" selected>GTX-1070</option>
+                                <option value="GTX-1070">GTX-1070</option>
                                 <option value="GTX-1060">GTX-1060</option>
                                 <option value="GTX-1050">GTX-1050</option>
                                 <option value="GTX-1030">GTX-1030</option>
@@ -455,19 +455,20 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                                         <option value="5120">5TB</option>
                                     </select>
                                 </div>
-
+                                <div class="hard warranty">
+                                    <div class="component-upload hard-warranty">
+                                        <label for="storage-upload-1" class="component-upload-button">بارگذاری تصویر
+                                            گارانتی</label>
+                                        <input type="file" id="storage-upload-1" name="storage_warranty_files[]"
+                                            class="component-file-input storage-warranty-input" accept="image/*,.pdf">
+                                        <span class="component-file-name" data-storage-file-name
+                                            aria-live="polite">فایلی انتخاب نشده</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="component-footer">
-                        <div class="component-upload">
-                            <label for="storage-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="storage-upload" name="storage_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
-                            <span class="component-file-name" data-file-name-for="storage-upload"
-                                aria-live="polite">فایلی انتخاب نشده</span>
-                        </div>
-
+                    <div class="component-footer storage-footer">
                         <div class="component-total">
                             <span>ظرفیت کل Storage :</span>
                             <output id="total-storage-capacity">0GB</output>
