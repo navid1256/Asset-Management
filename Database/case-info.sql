@@ -5,7 +5,7 @@ SET NAMES utf8mb4;
 -- Run login_users.sql and select-user.sql before this file.
 
 CREATE TABLE case_numbers (
-    case_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     asset_number VARCHAR(5) NULL,
     receiver_employee_id BIGINT UNSIGNED NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE case_numbers (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (case_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_numbers_it_number
         UNIQUE (it_number),
@@ -52,7 +52,7 @@ CREATE TABLE case_numbers (
 
 
 CREATE TABLE case_cpus (
-    cpu_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     brand VARCHAR(30) NOT NULL,
     generation TINYINT UNSIGNED NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE case_cpus (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (cpu_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_cpus_it_number
         UNIQUE (it_number),
@@ -85,7 +85,7 @@ CREATE TABLE case_cpus (
 
 
 CREATE TABLE case_motherboards (
-    motherboard_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(100) NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE case_motherboards (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (motherboard_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_motherboards_it_number
         UNIQUE (it_number),
@@ -110,7 +110,7 @@ CREATE TABLE case_motherboards (
 
 
 CREATE TABLE case_gpus (
-    gpu_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     gpu_type ENUM('onboard', 'internal') NOT NULL,
     brand VARCHAR(50) NULL,
@@ -121,7 +121,7 @@ CREATE TABLE case_gpus (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (gpu_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_gpus_it_number
         UNIQUE (it_number),
@@ -155,7 +155,7 @@ CREATE TABLE case_gpus (
 
 
 CREATE TABLE case_rams (
-    ram_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     ram_count TINYINT UNSIGNED NOT NULL,
     brand VARCHAR(50) NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE case_rams (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (ram_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_rams_configuration
         UNIQUE (
@@ -200,14 +200,14 @@ CREATE TABLE case_rams (
 
 
 CREATE TABLE case_storage_groups (
-    storage_group_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     storage_count TINYINT UNSIGNED NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (storage_group_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_storage_groups_it_number
         UNIQUE (it_number),
@@ -226,7 +226,7 @@ CREATE TABLE case_storage_groups (
 
 
 CREATE TABLE case_storage_devices (
-    storage_device_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     device_number TINYINT UNSIGNED NOT NULL,
     storage_type ENUM('NVMe', 'M.2 SATA', 'SATA') NOT NULL,
@@ -238,7 +238,7 @@ CREATE TABLE case_storage_devices (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (storage_device_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_storage_devices_number
         UNIQUE (it_number, device_number),
@@ -260,7 +260,7 @@ CREATE TABLE case_storage_devices (
 
 
 CREATE TABLE case_writers (
-    writer_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     writer_enabled TINYINT(1) NOT NULL DEFAULT 0,
     writer_type ENUM('CD Writer', 'DVD Writer') NULL,
@@ -271,7 +271,7 @@ CREATE TABLE case_writers (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (writer_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_writers_it_number
         UNIQUE (it_number),
@@ -308,7 +308,7 @@ CREATE TABLE case_writers (
 
 
 CREATE TABLE case_power_supplies (
-    power_supply_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(100) NOT NULL,
@@ -318,7 +318,7 @@ CREATE TABLE case_power_supplies (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (power_supply_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_power_supplies_it_number
         UNIQUE (it_number),
@@ -337,7 +337,7 @@ CREATE TABLE case_power_supplies (
 
 
 CREATE TABLE case_chassis (
-    chassis_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(100) NOT NULL,
@@ -346,7 +346,7 @@ CREATE TABLE case_chassis (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (chassis_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_chassis_it_number
         UNIQUE (it_number),
@@ -362,7 +362,7 @@ CREATE TABLE case_chassis (
 
 
 CREATE TABLE case_statuses (
-    status_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     case_type ENUM('new', 'old') NOT NULL,
     case_status ENUM('in_use', 'unused', 'retired') NOT NULL,
@@ -370,7 +370,7 @@ CREATE TABLE case_statuses (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (status_id),
+    PRIMARY KEY (id),
 
     CONSTRAINT uq_case_statuses_it_number
         UNIQUE (it_number),
