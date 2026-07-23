@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS user_otps (
     mobile VARCHAR(11) NOT NULL,
     otp_code VARCHAR(10) NOT NULL,
     expired_at DATETIME NOT NULL,
-    is_used TINYINT(1) NOT NULL DEFAULT 0,
+    is_used TINYINT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
@@ -70,6 +70,9 @@ CREATE TABLE IF NOT EXISTS user_otps (
     KEY idx_otps_national_id (national_id),
     KEY idx_otps_mobile (mobile),
     KEY idx_otps_expired_at (expired_at),
+
+    CONSTRAINT chk_user_otps_is_used
+        CHECK (is_used IN (0, 1)),
 
     CONSTRAINT fk_otps_national_id
         FOREIGN KEY (national_id)

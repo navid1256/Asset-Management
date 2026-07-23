@@ -1,5 +1,6 @@
 "use strict";
 
+(() => {
 const USER_PROFILE_STORAGE_KEY = "itAssetUserProfile";
 const CURRENT_USER_ENDPOINT = "../../process/current-user.php";
 
@@ -30,7 +31,7 @@ const renderReceiverProfile = () => {
 
     if (!userProfile) {
         if (fullNameElement) {
-            fullNameElement.textContent = "کاربر نامشخص";
+            fullNameElement.textContent = "تحویل‌گیرنده انتخاب نشده";
         }
         if (departmentElement) {
             departmentElement.textContent = "معاونت / اداره نامشخص";
@@ -38,14 +39,19 @@ const renderReceiverProfile = () => {
         return;
     }
 
-    const fullName = `${userProfile.name} ${userProfile.familyName}`.trim();
-    const department = `${userProfile.moavenat} / ${userProfile.edare}`;
+    const fullName =
+        `${userProfile.name ?? ""} ${userProfile.familyName ?? ""}`.trim();
+    const department = [userProfile.moavenat, userProfile.edare]
+        .filter(Boolean)
+        .join(" / ");
 
     if (fullNameElement) {
-        fullNameElement.textContent = fullName;
+        fullNameElement.textContent =
+            fullName || "نام تحویل‌گیرنده مشخص نیست";
     }
     if (departmentElement) {
-        departmentElement.textContent = department;
+        departmentElement.textContent =
+            department || "معاونت / اداره نامشخص";
     }
 };
 
@@ -110,3 +116,4 @@ document.addEventListener("DOMContentLoaded", () => {
     renderReceiverProfile();
     renderLoggedInUser();
 });
+})();

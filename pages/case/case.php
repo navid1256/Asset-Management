@@ -14,7 +14,10 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$receiverUserId = filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT);
+if (empty($_SESSION['receiver_user_id'])) {
+    header('Location: ' . BASE_URL . '/pages/select-user/select-user.php');
+    exit;
+}
 
 $formSuccess = $_SESSION['case_form_success'] ?? null;
 $formError = $_SESSION['case_form_error'] ?? null;
@@ -67,8 +70,6 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
         enctype="multipart/form-data">
         <input type="hidden" name="csrf_token"
             value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-        <input type="hidden" name="receiver_user_id" id="receiver-user-id"
-            value="<?= $receiverUserId ? (int) $receiverUserId : '' ?>">
         <fieldset class="form-section">
             <legend>
                 ثبت مشخصات تحویلی کیس
@@ -663,7 +664,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
             </div>
         </div>
     </form>
-    <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/user-profile.js?v=<?= filemtime(BASE_PATH . '/assets/js/user-profile.js') ?>"></script>
     <script src="<?= ASSETS_URL ?>/js/persian-digits.js?v=<?= filemtime(BASE_PATH . '/assets/js/persian-digits.js') ?>"></script>
     <script src="<?= ASSETS_URL ?>/js/case.js"></script>
 

@@ -1,26 +1,25 @@
 "use strict";
 
+(() => {
 const USER_PROFILE_STORAGE_KEY = "itAssetUserProfile";
 
 const userInfoForm = document.querySelector("#user-info-form");
 const nameInputs = document.querySelectorAll("#name, #family-name");
-const nationalCodeInput = document.querySelector("#national-code");
-const digitPattern = /[0-9۰-۹٠-٩]/;
-const allDigitsPattern = /[0-9۰-۹٠-٩]/g;
-const nonDigitPattern = /[^0-9۰-۹٠-٩]/;
-const allNonDigitsPattern = /[^0-9۰-۹٠-٩]/g;
-const nationalCodePattern = /^[0-9۰-۹٠-٩]{10}$/;
-const mobilePattern = /^[0۰٠][9۹٩][0-9۰-۹٠-٩]{9}$/;
+const deputySelect = document.querySelector("#moavenat");
+const departmentSelect = document.querySelector("#edare");
+
+const digitPattern = /\p{N}/u;
+const allDigitsPattern = /\p{N}/gu;
+const nationalCodePattern = /^[۰-۹]{10}$/;
+const mobilePattern = /^۰۹[۰-۹]{9}$/;
 
 const getInputValue = (selector) => {
     const input = document.querySelector(selector);
     return input ? input.value.trim() : "";
 };
 
-const getSelectedText = (selector) => {
-    const select = document.querySelector(selector);
-
-    if (!select || !select.value) {
+const getSelectedText = (select) => {
+    if (!select.value) {
         return "";
     }
 
@@ -28,7 +27,6 @@ const getSelectedText = (selector) => {
 };
 
 const removeDigits = (value) => value.replace(allDigitsPattern, "");
-const sanitizeNationalCode = (value) => value.replace(allNonDigitsPattern, "").slice(0, 10);
 
 nameInputs.forEach((input) => {
     input.addEventListener("beforeinput", (event) => {
@@ -38,39 +36,65 @@ nameInputs.forEach((input) => {
     });
 
     input.addEventListener("input", () => {
-        const valueWithoutDigits = removeDigits(input.value);
-        if (input.value !== valueWithoutDigits) {
-            input.value = valueWithoutDigits;
-        }
+        input.value = removeDigits(input.value);
     });
 });
 
-if (nationalCodeInput) {
-    nationalCodeInput.addEventListener("beforeinput", (event) => {
-        if (!event.data) {
+const filterDepartments = () => {
+    const selectedDeputyId = deputySelect.value;
+    let hasSelectedDepartment = false;
+
+    Array.from(departmentSelect.options).forEach((option, index) => {
+        if (index === 0) {
             return;
         }
 
-        if (nonDigitPattern.test(event.data)) {
-            event.preventDefault();
-            return;
-        }
+        const belongsToSelectedDeputy =
+            option.dataset.deputyId === selectedDeputyId;
 
-        const selectionLength = nationalCodeInput.selectionEnd - nationalCodeInput.selectionStart;
-        const nextLength = nationalCodeInput.value.length - selectionLength + event.data.length;
+        option.hidden = !belongsToSelectedDeputy;
+        option.disabled = !belongsToSelectedDeputy;
 
-        if (nextLength > 10) {
-            event.preventDefault();
+        if (option.selected && belongsToSelectedDeputy) {
+            hasSelectedDepartment = true;
         }
     });
 
-    nationalCodeInput.addEventListener("input", () => {
-        const sanitizedValue = sanitizeNationalCode(nationalCodeInput.value);
-        if (nationalCodeInput.value !== sanitizedValue) {
-            nationalCodeInput.value = sanitizedValue;
-        }
-    });
-}
+    departmentSelect.disabled = selectedDeputyId === "";
+
+    if (!hasSelectedDepartment) {
+        departmentSelect.value = "";
+    }
+};
+
+const validateUserInfo = () => {
+    const firstName = getInputValue("#name");
+    const lastName = getInputValue("#family-name");
+    const nationalCode = getInputValue("#national-code");
+    const mobile = getInputValue("#mobile");
+
+    if (!firstName || !lastName || !deputySelect.value || !departmentSelect.value) {
+        alert("لطفاً تمام اطلاعات تحویل‌گیرنده را کامل وارد کنید.");
+        return false;
+    }
+
+    if (digitPattern.test(firstName) || digitPattern.test(lastName)) {
+        alert("نام و نام خانوادگی نباید شامل عدد باشد.");
+        return false;
+    }
+
+    if (!nationalCodePattern.test(nationalCode)) {
+        alert("کد ملی باید دقیقاً ۱۰ رقم باشد.");
+        return false;
+    }
+
+    if (!mobilePattern.test(mobile)) {
+        alert("شماره همراه باید ۱۱ رقم و با ۰۹ شروع شود.");
+        return false;
+    }
+
+    return true;
+};
 
 const saveUserProfile = () => {
     const userProfile = {
@@ -78,41 +102,26 @@ const saveUserProfile = () => {
         familyName: getInputValue("#family-name"),
         nationalCode: getInputValue("#national-code"),
         mobile: getInputValue("#mobile"),
-        moavenat: getSelectedText("#moavenat"),
-        edare: getSelectedText("#edare")
+        moavenat: getSelectedText(deputySelect),
+        edare: getSelectedText(departmentSelect),
     };
 
-    if (!userProfile.name || !userProfile.familyName || !userProfile.moavenat || !userProfile.edare) {
-        alert("لطفاً نام، نام خانوادگی، معاونت و اداره را کامل وارد کنید.");
-        return false;
-    }
-
-    if (digitPattern.test(userProfile.name) || digitPattern.test(userProfile.familyName)) {
-        alert("نام و نام خانوادگی نباید شامل عدد باشد.");
-        return false;
-    }
-
-    if (!nationalCodePattern.test(userProfile.nationalCode)) {
-        alert("کد ملی باید دقیقاً ۱۰ رقم باشد.");
-        return false;
-    }
-
-    if (!mobilePattern.test(userProfile.mobile)) {
-        alert("شماره همراه باید ۱۱ رقم و با ۰۹ شروع شود.");
-        return false;
-    }
-
-    localStorage.setItem(USER_PROFILE_STORAGE_KEY, JSON.stringify(userProfile));
-
-    return true;
+    localStorage.setItem(
+        USER_PROFILE_STORAGE_KEY,
+        JSON.stringify(userProfile)
+    );
 };
 
+deputySelect.addEventListener("change", filterDepartments);
+
 userInfoForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const isSaved = saveUserProfile();
-
-    if (isSaved) {
-        window.location.href = userInfoForm.action;
+    if (!validateUserInfo()) {
+        event.preventDefault();
+        return;
     }
+
+    saveUserProfile();
 });
+
+filterDepartments();
+})();

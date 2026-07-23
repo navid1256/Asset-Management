@@ -1,4 +1,20 @@
-<?php require_once dirname(__DIR__, 2) . '/bootstrap/constants.php'; ?>
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+require_once dirname(__DIR__, 2) . '/bootstrap/constants.php';
+
+if (empty($_SESSION['authenticated_user_id'])) {
+    header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php');
+    exit;
+}
+
+if (empty($_SESSION['receiver_user_id'])) {
+    header('Location: ' . BASE_URL . '/pages/select-user/select-user.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,7 +56,7 @@
             <button type="button" class="asset-button">پرینتر و اسکنر</button>
         </section>
     </main>
-    <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/user-profile.js?v=<?= filemtime(BASE_PATH . '/assets/js/user-profile.js') ?>"></script>
     <script src="<?= ASSETS_URL ?>/js/assets.js"></script>
 </body>
 

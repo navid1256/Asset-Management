@@ -12,6 +12,20 @@ body {
     color: #222;
 }
 
+.form-message {
+    width: min(90%, 720px);
+    margin: 20px auto;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.form-message-error {
+    border: 1px solid #b42318;
+    background: #fef3f2;
+    color: #b42318;
+}
+
 button,
 input,
 select,
@@ -198,7 +212,7 @@ section.it-numbers {
 
 select {
     width: 100%;
-    min-height: 35px;
+    min-height: 40px;
     padding: 9px 44px 9px 16px;
     color: #222;
     background-color: #f5f5f5;
@@ -211,8 +225,8 @@ select {
         linear-gradient(45deg, transparent 50%, currentColor 50%),
         linear-gradient(135deg, currentColor 50%, transparent 50%);
     background-position:
-        calc(100% - 20px) 14px,
-        calc(100% - 14px) 14px;
+        calc(100% - 20px) 16px,
+        calc(100% - 14px) 16px;
     background-size: 6px 6px, 6px 6px;
     background-repeat: no-repeat;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
@@ -283,7 +297,7 @@ button:active {
     display: flex;
     direction: ltr;
     width: 100%;
-    padding: 288px 30px 30px;
+    padding: 230px 30px 30px;
 }
 
 .logout-form {
