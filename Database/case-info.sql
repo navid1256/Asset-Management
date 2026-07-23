@@ -4,7 +4,7 @@ SET NAMES utf8mb4;
 
 -- Run login_users.sql and select-user.sql before this file.
 
-CREATE TABLE computer_cases (
+CREATE TABLE case_numbers (
     case_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
     asset_number VARCHAR(5) NULL,
@@ -17,31 +17,31 @@ CREATE TABLE computer_cases (
 
     PRIMARY KEY (case_id),
 
-    CONSTRAINT uq_computer_cases_it_number
+    CONSTRAINT uq_case_numbers_it_number
         UNIQUE (it_number),
 
-    CONSTRAINT uq_computer_cases_asset_number
+    CONSTRAINT uq_case_numbers_asset_number
         UNIQUE (asset_number),
 
-    INDEX idx_computer_cases_receiver (receiver_employee_id),
-    INDEX idx_computer_cases_creator (created_by_user_id),
+    INDEX idx_case_numbers_receiver (receiver_employee_id),
+    INDEX idx_case_numbers_creator (created_by_user_id),
 
-    CONSTRAINT fk_computer_cases_receiver
+    CONSTRAINT fk_case_numbers_receiver
         FOREIGN KEY (receiver_employee_id)
         REFERENCES employees (id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
-    CONSTRAINT fk_computer_cases_creator
+    CONSTRAINT fk_case_numbers_creator
         FOREIGN KEY (created_by_user_id)
         REFERENCES users (id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
-    CONSTRAINT chk_computer_cases_it_number
+    CONSTRAINT chk_case_numbers_it_number
         CHECK (it_number REGEXP '^[0-9]{1,4}$'),
 
-    CONSTRAINT chk_computer_cases_asset_number
+    CONSTRAINT chk_case_numbers_asset_number
         CHECK (
             asset_number IS NULL
             OR asset_number REGEXP '^[0-9]{1,5}$'
@@ -70,7 +70,7 @@ CREATE TABLE case_cpus (
 
     CONSTRAINT fk_case_cpus_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
@@ -101,7 +101,7 @@ CREATE TABLE case_motherboards (
 
     CONSTRAINT fk_case_motherboards_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE = InnoDB
@@ -128,7 +128,7 @@ CREATE TABLE case_gpus (
 
     CONSTRAINT fk_case_gpus_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
@@ -154,62 +154,43 @@ CREATE TABLE case_gpus (
   COLLATE = utf8mb4_unicode_ci;
 
 
-CREATE TABLE case_ram_groups (
-    ram_group_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    it_number VARCHAR(4) NOT NULL,
-    ram_count TINYINT UNSIGNED NOT NULL,
-    warranty_file_path VARCHAR(500) NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
-
-    PRIMARY KEY (ram_group_id),
-
-    CONSTRAINT uq_case_ram_groups_it_number
-        UNIQUE (it_number),
-
-    CONSTRAINT fk_case_ram_groups_it_number
-        FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-
-    CONSTRAINT chk_case_ram_groups_count
-        CHECK (ram_count BETWEEN 1 AND 4)
-) ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci;
-
-
 CREATE TABLE case_rams (
     ram_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
-    slot_number TINYINT UNSIGNED NOT NULL,
+    ram_count TINYINT UNSIGNED NOT NULL,
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(100) NOT NULL,
     ram_type ENUM('DDR4', 'DDR5') NOT NULL,
-    capacity_gb TINYINT UNSIGNED NOT NULL,
+    module_capacity_gb TINYINT UNSIGNED NOT NULL,
     speed_mhz INT UNSIGNED NOT NULL,
+    warranty_file_path VARCHAR(500) NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (ram_id),
 
-    CONSTRAINT uq_case_rams_slot
-        UNIQUE (it_number, slot_number),
+    CONSTRAINT uq_case_rams_configuration
+        UNIQUE (
+            it_number,
+            brand,
+            model,
+            ram_type,
+            module_capacity_gb,
+            speed_mhz
+        ),
 
     CONSTRAINT fk_case_rams_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
-    CONSTRAINT chk_case_rams_slot
-        CHECK (slot_number BETWEEN 1 AND 4),
+    CONSTRAINT chk_case_rams_count
+        CHECK (ram_count BETWEEN 1 AND 4),
 
     CONSTRAINT chk_case_rams_capacity
-        CHECK (capacity_gb > 0),
+        CHECK (module_capacity_gb > 0),
 
     CONSTRAINT chk_case_rams_speed
         CHECK (speed_mhz > 0)
@@ -233,7 +214,7 @@ CREATE TABLE case_storage_groups (
 
     CONSTRAINT fk_case_storage_groups_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
@@ -264,7 +245,7 @@ CREATE TABLE case_storage_devices (
 
     CONSTRAINT fk_case_storage_devices_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
@@ -297,7 +278,7 @@ CREATE TABLE case_writers (
 
     CONSTRAINT fk_case_writers_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
@@ -344,7 +325,7 @@ CREATE TABLE case_power_supplies (
 
     CONSTRAINT fk_case_power_supplies_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
@@ -372,7 +353,7 @@ CREATE TABLE case_chassis (
 
     CONSTRAINT fk_case_chassis_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE = InnoDB
@@ -396,7 +377,7 @@ CREATE TABLE case_statuses (
 
     CONSTRAINT fk_case_statuses_it_number
         FOREIGN KEY (it_number)
-        REFERENCES computer_cases (it_number)
+        REFERENCES case_numbers (it_number)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
