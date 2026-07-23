@@ -77,12 +77,13 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                 <div class="shomare-amval">
                     <label for="asset-number"> شماره اموال :</label>
                     <input type="text" id="asset-number" name="assetNumber" placeholder="شماره اموال"
-                        inputmode="numeric" maxlength="5" pattern="[0-9۰-۹٠-٩]{0,5}" autocomplete="off">
+                        inputmode="numeric" maxlength="5" pattern="[۰-۹]{0,5}" autocomplete="off"
+                        data-persian-number>
                 </div>
                 <div class="shomare-it">
                     <label for="it-number"> شماره IT :</label>
                     <input type="text" id="it-number" name="itNumber" placeholder="شماره IT" inputmode="numeric"
-                        maxlength="4" pattern="[0-9۰-۹٠-٩]{1,4}" autocomplete="off" required>
+                        maxlength="4" pattern="[۰-۹]{1,4}" autocomplete="off" data-persian-number required>
                 </div>
             </section>
         </fieldset>
@@ -663,6 +664,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
         </div>
     </form>
     <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/persian-digits.js?v=<?= filemtime(BASE_PATH . '/assets/js/persian-digits.js') ?>"></script>
     <script src="<?= ASSETS_URL ?>/js/case.js"></script>
 
 

@@ -19,6 +19,10 @@
             name="phone"
             placeholder="شماره موبایل"
             value=""
+            inputmode="numeric"
+            maxlength="11"
+            pattern="۰۹[۰-۹]{9}"
+            data-persian-number
             required
           />
         </div>
@@ -27,9 +31,11 @@
           <input
             type="text"
             name="otp"
-            pattern="^[0-9]{6}$"
+            inputmode="numeric"
+            maxlength="6"
+            pattern="[۰-۹]{6}"
             placeholder="کد یک‌بار مصرف"
-            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)"
+            data-persian-number
           />
           <button type="button" class="btn-inside" id="codeBtn">دریافت کد</button>
         </div>
@@ -41,5 +47,6 @@
       <span aria-hidden="true">&larr;</span>
       <span>بازگشت</span>
     </button>
+    <script src="<?= ASSETS_URL ?>/js/persian-digits.js?v=<?= filemtime(BASE_PATH . '/assets/js/persian-digits.js') ?>"></script>
   </body>
 </html>

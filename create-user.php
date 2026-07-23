@@ -92,7 +92,8 @@ function escape(string $value): string
 
             <div class="input-box">
                 <input type="text" name="national_id" value="<?= escape($values['national_id']) ?>"
-                    placeholder="کد ملی" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" required>
+                    placeholder="کد ملی" inputmode="numeric" maxlength="10" pattern="[۰-۹]{10}"
+                    data-persian-number required>
             </div>
 
             <div class="input-box">
@@ -128,6 +129,7 @@ function escape(string $value): string
             <button type="submit" class="btn">ثبت کاربر</button>
         </form>
     </div>
+    <script src="<?= ASSETS_URL ?>/js/persian-digits.js?v=<?= filemtime(BASE_PATH . '/assets/js/persian-digits.js') ?>"></script>
     <script src="<?= ASSETS_URL ?>/js/password-visibility.js?v=<?= filemtime(BASE_PATH . '/assets/js/password-visibility.js') ?>"></script>
 </body>
 

@@ -41,12 +41,12 @@
                     <div>
                         <label for="national-code">کد ملی :</label>
                         <input type="text" id="national-code" name="nationalCode" placeholder="کد ملی"
-                            inputmode="numeric" maxlength="10" pattern="[0-9۰-۹٠-٩]{10}" required>
+                            inputmode="numeric" maxlength="10" pattern="[۰-۹]{10}" data-persian-number required>
                     </div>
                     <div>
                         <label for="mobile">شماره همراه :</label>
-                        <input type="tel" id="mobile" name="mobile" placeholder="09xxxxxxxxx" inputmode="numeric"
-                            maxlength="11" pattern="[0۰٠][9۹٩][0-9۰-۹٠-٩]{9}" autocomplete="tel" required>
+                        <input type="tel" id="mobile" name="mobile" placeholder="۰۹xxxxxxxxx" inputmode="numeric"
+                            maxlength="11" pattern="۰۹[۰-۹]{9}" autocomplete="tel" data-persian-number required>
                     </div>
                 </div>
 
@@ -86,6 +86,7 @@
     </footer>
 
     <script src="<?= ASSETS_URL ?>/js/user-profile.js"></script>
+    <script src="<?= ASSETS_URL ?>/js/persian-digits.js?v=<?= filemtime(BASE_PATH . '/assets/js/persian-digits.js') ?>"></script>
     <script src="<?= ASSETS_URL ?>/js/select-user.js"></script>
 </body>
 
