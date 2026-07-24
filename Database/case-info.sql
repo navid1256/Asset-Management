@@ -262,7 +262,7 @@ CREATE TABLE case_storage_devices (
 CREATE TABLE case_writers (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     it_number VARCHAR(4) NOT NULL,
-    writer_enabled TINYINT(1) NOT NULL DEFAULT 0,
+    writer_enabled TINYINT UNSIGNED NOT NULL DEFAULT 0,
     writer_type ENUM('CD Writer', 'DVD Writer') NULL,
     brand VARCHAR(50) NULL,
     model VARCHAR(100) NULL,
