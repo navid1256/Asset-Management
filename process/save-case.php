@@ -10,6 +10,7 @@ require_once __DIR__ . '/../bootstrap/constants.php';
 require_once __DIR__ . '/../bootstrap/database.php';
 require_once __DIR__ . '/../libs/lib-input.php';
 require_once __DIR__ . '/../libs/lib-case.php';
+require_once __DIR__ . '/../libs/lib-upload.php';
 
 function redirectToCaseForm(): never
 {
@@ -92,13 +93,18 @@ try {
         );
     }
 
-    $assetNumber = $assetNumber === ''
-        ? null
-        : $assetNumber;
+    $assetNumber = $assetNumber === '' ? null : $assetNumber;
+
+    $deliverySheetPath = storeRequiredUploadedFile(
+        $_FILES['delivery_sheet'] ?? [],
+        BASE_PATH . '/storage/uploads/delivery-sheets',
+        'storage/uploads/delivery-sheets'
+    );
 
     /*
      * در مرحله بعد Transaction را از اینجا شروع می‌کنیم.
      */
+
     try {
         $pdo->beginTransaction();
 
@@ -108,7 +114,7 @@ try {
             $assetNumber,
             $receiverEmployeeId,
             $createdByUserId,
-            null
+            $deliverySheetPath
         );
 
         /*
@@ -129,6 +135,19 @@ try {
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
+            $deliverySheetAbsolutePath = BASE_PATH
+                . DIRECTORY_SEPARATOR
+                . str_replace('/', DIRECTORY_SEPARATOR, $deliverySheetPath);
+
+            if (
+                is_file($deliverySheetAbsolutePath)
+                && !unlink($deliverySheetAbsolutePath)
+            ) {
+                error_log(
+                    'Failed to delete delivery sheet: '
+                        . $deliverySheetAbsolutePath
+                );
+            }
         }
 
         error_log($exception->getMessage());
@@ -140,6 +159,13 @@ try {
     }
 } catch (InvalidArgumentException $exception) {
     $_SESSION['case_form_error'] = $exception->getMessage();
+
+    redirectToCaseForm();
+} catch (Throwable $exception) {
+    error_log($exception->getMessage());
+
+    $_SESSION['case_form_error'] =
+        'هنگام بارگذاری برگه تحویل خطایی رخ داد.';
 
     redirectToCaseForm();
 }

@@ -660,7 +660,8 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
             <button type="submit" class="submit-button">ثبت</button>
             <div class="delivery-upload">
                 <label for="delivery-sheet" class="upload-button">بارگذاری برگه تحویل</label>
-                <input type="file" id="delivery-sheet" name="delivery-sheet" class="file-input" accept="image/*,.pdf">
+                <input type="file" id="delivery-sheet" name="delivery_sheet" class="file-input" accept="image/jpeg,image/png,image/webp,application/pdf"
+                    required>
                 <span id="delivery-file-name" class="file-name" aria-live="polite">فایلی انتخاب نشده</span>
             </div>
         </div>

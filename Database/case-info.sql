@@ -10,7 +10,7 @@ CREATE TABLE case_numbers (
     asset_number VARCHAR(5) NULL,
     receiver_employee_id BIGINT UNSIGNED NOT NULL,
     created_by_user_id BIGINT UNSIGNED NOT NULL,
-    delivery_sheet_path VARCHAR(500) NULL,
+    delivery_sheet_path VARCHAR(500) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,

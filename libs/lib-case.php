@@ -8,7 +8,7 @@ function createCaseNumber(
     ?string $assetNumber,
     int $receiverEmployeeId,
     int $createdByUserId,
-    ?string $deliverySheetPath = null
+    string $deliverySheetPath
 ): int {
     $statement = $pdo->prepare(
         'INSERT INTO case_numbers (
@@ -35,4 +35,41 @@ function createCaseNumber(
     ]);
 
     return (int) $pdo->lastInsertId();
+}
+
+function createCaseCpu(
+    PDO $pdo,
+    string $itNumber,
+    string $brand,
+    int $generation,
+    string $model,
+    string $speedGhz,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_cpus (
+            it_number,
+            brand,
+            generation,
+            model,
+            speed_ghz,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :brand,
+            :generation,
+            :model,
+            :speed_ghz,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'brand' => $brand,
+        'generation' => $generation,
+        'model' => $model,
+        'speed_ghz' => $speedGhz,
+        'warranty_file_path' => $warrantyFilePath,
+    ]);
 }
