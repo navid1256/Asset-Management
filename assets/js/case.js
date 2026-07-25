@@ -95,7 +95,7 @@ function getCaseTypeByCpuGeneration(generation) {
         return '';
     }
 
-    return generation > 12 ? 'new' : 'old';
+    return generation >= 12 ? 'new' : 'old';
 }
 
 function saveCaseStatusByCpuGeneration() {

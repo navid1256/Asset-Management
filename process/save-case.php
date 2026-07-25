@@ -11,14 +11,19 @@ require_once __DIR__ . '/../bootstrap/database.php';
 require_once __DIR__ . '/../libs/lib-input.php';
 require_once __DIR__ . '/../libs/lib-case.php';
 require_once __DIR__ . '/../libs/lib-upload.php';
+require_once __DIR__ . '/../libs/lib-case-validation.php';
+require_once __DIR__ . '/../libs/lib-case-upload.php';
 
+/**
+ * Redirects the request back to the case registration form.
+ */
 function redirectToCaseForm(): never
 {
     header('Location: ' . BASE_URL . '/pages/case/case.php');
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     redirectToCaseForm();
 }
 
@@ -43,13 +48,15 @@ if ($receiverEmployeeId < 1) {
     exit;
 }
 
+$uploadedPaths = [];
+
 try {
-    $submittedToken = $_POST['csrf_token'] ?? '';
+    $submittedToken = readStringInput($_POST, 'csrf_token');
     $sessionToken = $_SESSION['csrf_token'] ?? '';
 
     if (
-        !is_string($submittedToken)
-        || !is_string($sessionToken)
+        !is_string($sessionToken)
+        || $submittedToken === ''
         || $sessionToken === ''
         || !hash_equals($sessionToken, $submittedToken)
     ) {
@@ -58,326 +65,162 @@ try {
         );
     }
 
-    $itNumberInput = $_POST['itNumber'] ?? '';
-    $assetNumberInput = $_POST['assetNumber'] ?? '';
+    $caseData = validateCaseForm($_POST);
+    $storageCount = $caseData['storage']['count'];
+    $uploadedFiles = uploadCaseFiles($_FILES, $storageCount);
+    $uploadedPaths = $uploadedFiles['uploaded_paths'];
 
-    if (
-        !is_string($itNumberInput)
-        || !is_string($assetNumberInput)
-    ) {
-        throw new InvalidArgumentException(
-            'شماره IT یا شماره اموال معتبر نیست.'
-        );
+    $caseNumbers = $caseData['case_numbers'];
+    $cpu = $caseData['cpu'];
+    $motherboard = $caseData['motherboard'];
+    $gpu = $caseData['gpu'];
+    $ram = $caseData['ram'];
+    $storage = $caseData['storage'];
+    $writer = $caseData['writer'];
+    $powerSupply = $caseData['power_supply'];
+    $chassis = $caseData['chassis'];
+
+    $itNumber = $caseNumbers['it_number'];
+    $storageDevices = $storage['devices'];
+    $storageWarrantyPaths = $uploadedFiles['storage_warranties'];
+
+    foreach ($storageDevices as $index => $storageDevice) {
+        $storageDevices[$index]['warranty_path'] =
+            $storageWarrantyPaths[$index] ?? null;
     }
 
-    $itNumber = normalizeDigitsToEnglish(
-        trim($itNumberInput)
+    $gpuMemoryGB = $gpu['memory_gb'] === null
+        ? null
+        : (string) $gpu['memory_gb'];
+
+    $pdo->beginTransaction();
+
+    $caseId = createCaseNumber(
+        $pdo,
+        $itNumber,
+        $caseNumbers['asset_number'],
+        $receiverEmployeeId,
+        $createdByUserId,
+        $uploadedFiles['delivery_sheet']
     );
 
-    $assetNumber = normalizeDigitsToEnglish(
-        trim($assetNumberInput)
+    createCaseCpu(
+        $pdo,
+        $itNumber,
+        $cpu['brand'],
+        $cpu['generation'],
+        $cpu['model'],
+        $cpu['speed_ghz'],
+        $uploadedFiles['cpu_warranty']
     );
 
-    if (!preg_match('/^[0-9]{1,4}$/', $itNumber)) {
-        throw new InvalidArgumentException(
-            'شماره IT باید بین یک تا چهار رقم باشد.'
-        );
-    }
+    createCaseMotherboard(
+        $pdo,
+        $itNumber,
+        $motherboard['brand'],
+        $motherboard['model'],
+        $uploadedFiles['motherboard_warranty']
+    );
 
-    if (
-        $assetNumber !== ''
-        && !preg_match('/^[0-9]{1,5}$/', $assetNumber)
-    ) {
-        throw new InvalidArgumentException(
-            'شماره اموال باید حداکثر پنج رقم باشد.'
-        );
-    }
+    createCaseGpu(
+        $pdo,
+        $itNumber,
+        $gpu['type'],
+        $gpu['brand'],
+        $gpu['model'],
+        $gpuMemoryGB,
+        $uploadedFiles['gpu_warranty']
+    );
 
-    $assetNumber = $assetNumber === '' ? null : $assetNumber;
-
-    try {
-        // ============== FILE UPLOADS ==============
-        include __DIR__ . '/case-waranty-upload-handler.php';
-
-        // ============== CPU DATA ==============
-        $cpuBrand = trim($_POST['cpu_brand'] ?? '');
-        $cpuGeneration = (int) ($_POST['cpu_generation'] ?? 0);
-        $cpuModel = trim($_POST['cpu_model'] ?? '');
-        $cpuSpeedGhz = trim($_POST['cpu_speed_ghz'] ?? '');
-
-        if (!$cpuBrand || !$cpuModel || !$cpuSpeedGhz || $cpuGeneration < 1) {
-            throw new InvalidArgumentException(
-                'اطلاعات CPU کامل نیست.'
-            );
-        }
-
-        // ============== MOTHERBOARD DATA ==============
-        $motherboardBrand = trim($_POST['motherboard_brand'] ?? '');
-        $motherboardModel = trim($_POST['motherboard_model'] ?? '');
-
-        if (!$motherboardBrand || !$motherboardModel) {
-            throw new InvalidArgumentException(
-                'اطلاعات Motherboard کامل نیست.'
-            );
-        }
-
-        // ============== GPU DATA ==============
-        $gpuType = trim($_POST['gpu_type'] ?? '');
-        $gpuBrand = trim($_POST['gpu_brand'] ?? '');
-        $gpuModel = trim($_POST['gpu_model'] ?? '');
-        $gpuMemoryGB = trim($_POST['gpu_memory_gb'] ?? '');
-
-        if (!$gpuType || ($gpuType === 'internal' && (!$gpuBrand || !$gpuModel || !$gpuMemoryGB))) {
-            throw new InvalidArgumentException(
-                'اطلاعات GPU کامل نیست.'
-            );
-        }
-
-        // ============== RAM DATA ==============
-        $ramCount = (int) ($_POST['ram_count'] ?? 0);
-        $ramBrand = trim($_POST['ram_brand'] ?? '');
-        $ramModel = trim($_POST['ram_model'] ?? '');
-        $ramType = trim($_POST['ram_type'] ?? '');
-        $ramModuleCapacityGB = trim($_POST['ram_capacity_gb'] ?? '');
-        $ramSpeedMHz = (int) ($_POST['ram_speed_mhz'] ?? 0);
-
-        if (!$ramBrand || !$ramModel || !$ramType || !$ramModuleCapacityGB || $ramCount < 1 || $ramSpeedMHz < 1) {
-            throw new InvalidArgumentException(
-                'اطلاعات RAM کامل نیست.'
-            );
-        }
-
-        // ============== STORAGE GROUP DATA ==============
-        $storageCount = (int) ($_POST['storage_count'] ?? 0);
-
-        if ($storageCount < 1 || $storageCount > 3) {
-            throw new InvalidArgumentException(
-                'تعداد Storage باید بین 1 و 3 باشد.'
-            );
-        }
-
-        // ============== STORAGE DEVICE DATA ==============
-        $storageDevices = [];
-        for ($i = 1; $i <= $storageCount; $i++) {
-            $deviceNumber = $i;
-            $storageType = trim($_POST["storage_type"][$i - 1] ?? '');
-            $storageBrand = trim($_POST["storage_brand"][$i - 1] ?? '');
-            $storageModel = trim($_POST["storage_model"][$i - 1] ?? '');
-            $storageCapacityGB = (int) ($_POST["storage_capacity_gb"][$i - 1] ?? 0);
-
-            if (!$storageType || !$storageBrand || !$storageModel || $storageCapacityGB < 1) {
-                throw new InvalidArgumentException(
-                    "اطلاعات Storage $i کامل نیست."
-                );
-            }
-
-            $storageWarrantyPath = $storageWarrantyPaths[$i - 1] ?? null;
-
-            $storageDevices[] = [
-                'device_number' => $deviceNumber,
-                'storage_type' => $storageType,
-                'brand' => $storageBrand,
-                'model' => $storageModel,
-                'capacity_gb' => $storageCapacityGB,
-                'warranty_path' => $storageWarrantyPath,
-            ];
-        }
-
-        // ============== WRITER DATA ==============
-        $writerEnabled = (int) ($_POST['writer_enabled'] ?? 0);
-        $writerType = null;
-        $writerBrand = null;
-        $writerModel = null;
-
-        if ($writerEnabled) {
-            $writerType = trim($_POST['writer_type'] ?? '');
-            $writerBrand = trim($_POST['writer_brand'] ?? '');
-            $writerModel = trim($_POST['writer_model'] ?? '');
-
-            if (!$writerType || !$writerBrand || !$writerModel) {
-                throw new InvalidArgumentException(
-                    'اطلاعات Writer کامل نیست.'
-                );
-            }
-        }
-
-        // ============== POWER SUPPLY DATA ==============
-        $powerSupplyBrand = trim($_POST['power_brand'] ?? '');
-        $powerSupplyModel = trim($_POST['power_model'] ?? '');
-        $powerSupplyWattage = (int) ($_POST['power_wattage_w'] ?? 0);
-
-        if (!$powerSupplyBrand || !$powerSupplyModel || $powerSupplyWattage < 1) {
-            throw new InvalidArgumentException(
-                'اطلاعات Power Supply کامل نیست.'
-            );
-        }
-
-        // ============== CHASSIS DATA ==============
-        $chassisBrand = trim($_POST['case_brand'] ?? '');
-        $chassisModel = trim($_POST['case_model'] ?? '');
-
-        if (!$chassisBrand || !$chassisModel) {
-            throw new InvalidArgumentException(
-                'اطلاعات Chassis کامل نیست.'
-            );
-        }
-
-        // ============== CASE STATUS DATA ==============
-        $caseType = trim($_POST['case_type'] ?? '');
-        $caseStatus = trim($_POST['case_status'] ?? '');
-
-        if (!$caseType || !$caseStatus) {
-            throw new InvalidArgumentException(
-                'اطلاعات وضعیت کیس کامل نیست.'
-            );
-        }
-
-        $pdo->beginTransaction();
-
-        $caseId = createCaseNumber(
-            $pdo,
-            $itNumber,
-            $assetNumber,
-            $receiverEmployeeId,
-            $createdByUserId,
-            $deliverySheetPath
-        );
-
-        createCaseCpu(
-            $pdo,
-            $itNumber,
-            $cpuBrand,
-            $cpuGeneration,
-            $cpuModel,
-            $cpuSpeedGhz,
-            $cpuWarrantyPath
-        );
-
-        createCaseMotherboard(
-            $pdo,
-            $itNumber,
-            $motherboardBrand,
-            $motherboardModel,
-            $motherboardWarrantyPath
-        );
-
-        createCaseGpu(
-            $pdo,
-            $itNumber,
-            $gpuBrand,
-            $gpuType,
-            $gpuModel,
-            $gpuMemoryGB,
-            $gpuWarrantyPath
-        );
-
+    foreach ($ram['configurations'] as $ramConfiguration) {
         createCaseRam(
             $pdo,
             $itNumber,
-            $ramBrand,
-            $ramCount,
-            $ramModel,
-            $ramType,
-            $ramModuleCapacityGB,
-            $ramSpeedMHz,
-            $ramWarrantyPath
+            $ramConfiguration['brand'],
+            $ramConfiguration['ram_count'],
+            $ramConfiguration['model'],
+            $ramConfiguration['ram_type'],
+            (string) $ramConfiguration['module_capacity_gb'],
+            $ramConfiguration['speed_mhz'],
+            $uploadedFiles['ram_warranty']
         );
-
-        createCaseStorageGroup(
-            $pdo,
-            $itNumber,
-            $storageCount
-        );
-
-        foreach ($storageDevices as $device) {
-            createStorageDevice(
-                $pdo,
-                $itNumber,
-                $device['device_number'],
-                $device['storage_type'],
-                $device['brand'],
-                $device['model'],
-                $device['capacity_gb'],
-                $device['warranty_path']
-            );
-        }
-
-        createCaseWriter(
-            $pdo,
-            $itNumber,
-            $writerEnabled,
-            $writerType,
-            $writerBrand,
-            $writerModel,
-            $writerWarrantyPath
-        );
-
-        createCasePowerSupply(
-            $pdo,
-            $itNumber,
-            $powerSupplyBrand,
-            $powerSupplyModel,
-            $powerSupplyWattage,
-            $powerSupplyWarrantyPath
-        );
-
-        createCaseChassis(
-            $pdo,
-            $itNumber,
-            $chassisBrand,
-            $chassisModel,
-            $chassisWarrantyPath
-        );
-
-        createCaseStatus(
-            $pdo,
-            $itNumber,
-            $caseType,
-            $caseStatus
-        );
-
-        $pdo->commit();
-
-        $_SESSION['registered_case_id'] = $caseId;
-
-        header(
-            'Location: '
-                . BASE_URL
-                . '/pages/case/case-status.php'
-        );
-        exit;
-    } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) {
-            $pdo->rollBack();
-
-            // Delete all uploaded files
-            foreach ($uploadedPaths as $path) {
-                $absolutePath = BASE_PATH
-                    . DIRECTORY_SEPARATOR
-                    . str_replace('/', DIRECTORY_SEPARATOR, $path);
-
-                if (is_file($absolutePath) && !unlink($absolutePath)) {
-                    error_log('Failed to delete uploaded file: ' . $absolutePath);
-                }
-            }
-        }
-
-        error_log($exception->getMessage());
-
-        $_SESSION['case_form_error'] =
-            'هنگام ثبت اطلاعات کیس خطایی رخ داد.';
-
-        redirectToCaseForm();
     }
+
+    createCaseStorageGroup(
+        $pdo,
+        $itNumber,
+        $storage['count']
+    );
+
+    foreach ($storageDevices as $storageDevice) {
+        createStorageDevice(
+            $pdo,
+            $itNumber,
+            $storageDevice['device_number'],
+            $storageDevice['storage_type'],
+            $storageDevice['brand'],
+            $storageDevice['model'],
+            $storageDevice['capacity_gb'],
+            $storageDevice['warranty_path']
+        );
+    }
+
+    createCaseWriter(
+        $pdo,
+        $itNumber,
+        $writer['enabled'],
+        $writer['type'],
+        $writer['brand'],
+        $writer['model'],
+        $uploadedFiles['writer_warranty']
+    );
+
+    createCasePowerSupply(
+        $pdo,
+        $itNumber,
+        $powerSupply['brand'],
+        $powerSupply['model'],
+        $powerSupply['wattage_w'],
+        $uploadedFiles['power_supply_warranty']
+    );
+
+    createCaseChassis(
+        $pdo,
+        $itNumber,
+        $chassis['brand'],
+        $chassis['model'],
+        $uploadedFiles['chassis_warranty']
+    );
+
+    $pdo->commit();
+
+    $_SESSION['registered_case_id'] = $caseId;
+
+    header(
+        'Location: '
+            . BASE_URL
+            . '/pages/case/case-status.php'
+    );
+    exit;
 } catch (InvalidArgumentException $exception) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    cleanupUploadedPaths($uploadedPaths);
     $_SESSION['case_form_error'] = $exception->getMessage();
 
     redirectToCaseForm();
 } catch (Throwable $exception) {
-    error_log($exception->getMessage());
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    cleanupUploadedPaths($uploadedPaths);
+    error_log('Save case error: ' . $exception->getMessage());
 
     $_SESSION['case_form_error'] =
-        'هنگام بارگذاری برگه تحویل خطایی رخ داد.';
+        'هنگام ثبت اطلاعات کیس خطایی رخ داد.';
 
     redirectToCaseForm();
 }

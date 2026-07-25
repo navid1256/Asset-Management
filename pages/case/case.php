@@ -66,7 +66,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
         </div>
     <?php endif; ?>
 
-    <form id="case-info-form" action="<?= BASE_URL ?>/pages/case/case-status.php" method="post"
+    <form id="case-info-form" action="<?= BASE_URL ?>/process/save-case.php" method="post"
         enctype="multipart/form-data">
         <input type="hidden" name="csrf_token"
             value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
@@ -145,7 +145,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="component-upload">
                             <label for="cpu-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
                             <input type="file" id="cpu-upload" name="cpu_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
+                                accept="image/*,application/pdf">
                             <span class="component-file-name" data-file-name-for="cpu-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
@@ -185,7 +185,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="component-upload">
                             <label for="motherboard-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
                             <input type="file" id="motherboard-upload" name="motherboard_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
+                                accept="image/*,application/pdf">
                             <span class="component-file-name" data-file-name-for="motherboard-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
@@ -252,7 +252,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                             <label for="gpu-upload" class="component-upload-button">بارگذاری تصویر
                                 گارانتی</label>
                             <input type="file" id="gpu-upload" name="gpu_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
+                                accept="image/*,application/pdf">
                             <span class="component-file-name" data-file-name-for="gpu-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
@@ -325,7 +325,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                                 </div>
                                 <div class="ram speed">
                                     <label for="memory-speed-1">سرعت حافظه :</label>
-                                    <input type="number" id="memory-speed-1" name="ram_speed_mhz[]" min="0" step="1"
+                                    <input type="number" id="memory-speed-1" name="ram_speed_mhz[]" min="1" step="1"
                                         placeholder="MHz" required>
                                     <span class="speed-unit">MHz</span>
                                 </div>
@@ -336,7 +336,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="component-upload">
                             <label for="ram-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
                             <input type="file" id="ram-upload" name="ram_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
+                                accept="image/*,application/pdf">
                             <span class="component-file-name" data-file-name-for="ram-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
@@ -460,7 +460,8 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                                         <label for="storage-upload-1" class="component-upload-button">بارگذاری تصویر
                                             گارانتی</label>
                                         <input type="file" id="storage-upload-1" name="storage_warranty_files[]"
-                                            class="component-file-input storage-warranty-input" accept="image/*,.pdf">
+                                            class="component-file-input storage-warranty-input"
+                                            accept="image/*,application/pdf">
                                         <span class="component-file-name" data-storage-file-name
                                             aria-live="polite">فایلی انتخاب نشده</span>
                                     </div>
@@ -545,7 +546,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="component-upload">
                             <label for="writer-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
                             <input type="file" id="writer-upload" name="writer_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
+                                accept="image/*,application/pdf">
                             <span class="component-file-name" data-file-name-for="writer-upload"
                                 aria-live="polite">فایلی انتخاب نشده</span>
                         </div>
@@ -601,7 +602,7 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="component-upload">
                             <label for="power-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
                             <input type="file" id="power-upload" name="power_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
+                                accept="image/*,application/pdf">
                             <span class="component-file-name" data-file-name-for="power-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
@@ -643,13 +644,12 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                         <div class="component-upload">
                             <label for="case-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
                             <input type="file" id="case-upload" name="case_warranty_file" class="component-file-input"
-                                accept="image/*,.pdf">
+                                accept="image/*,application/pdf">
                             <span class="component-file-name" data-file-name-for="case-upload" aria-live="polite">فایلی
                                 انتخاب نشده</span>
                         </div>
                     </div>
                 </section>
-            </section>
             </section>
 
 
@@ -660,7 +660,8 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
             <button type="submit" class="submit-button">ثبت</button>
             <div class="delivery-upload">
                 <label for="delivery-sheet" class="upload-button">بارگذاری برگه تحویل</label>
-                <input type="file" id="delivery-sheet" name="delivery_sheet" class="file-input" accept="image/jpeg,image/png,image/webp,application/pdf"
+                <input type="file" id="delivery-sheet" name="delivery_sheet" class="file-input"
+                    accept="image/*,application/pdf"
                     required>
                 <span id="delivery-file-name" class="file-name" aria-live="polite">فایلی انتخاب نشده</span>
             </div>

@@ -106,10 +106,10 @@ function createCaseMotherboard(
 function createCaseGpu(
     PDO $pdo,
     string $itNumber,
-    string $brand,
     string $gpuType,
-    string $model,
-    string $memoryGB,
+    ?string $brand,
+    ?string $model,
+    ?string $memoryGB,
     ?string $warrantyFilePath
 ): void {
     $statement = $pdo->prepare(

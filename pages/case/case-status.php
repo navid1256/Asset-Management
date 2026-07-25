@@ -4,6 +4,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 require_once dirname(__DIR__, 2) . '/bootstrap/constants.php';
+require_once dirname(__DIR__, 2) . '/process/save-case-status.php';
 
 if (empty($_SESSION['authenticated_user_id'])) {
     header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php');
@@ -46,36 +47,48 @@ if (empty($_SESSION['receiver_user_id'])) {
         <img src="<?= ASSETS_URL ?>/img/logo.png" alt="لوگو شرکت">
     </header>
 
-    <form action="#" method="post" class="case-form">
+    <form action="<?= BASE_URL ?>/process/save-case-status.php" method="post" class="case-form">
+        <input type="hidden" name="csrf-token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
         <fieldset class="form-section">
             <legend>
                 وضعیت کیس
             </legend>
-            <section class="new-case">
-                <h2>کیس جدید</h2>
-                <div class="case-status">
-                    <label for="case-status"> وضعیت کیس :</label>
-                    <select id="case-status" name="caseStatus">
-                        <option value="Select Status" disabled>Select Status</option>
-                        <option value="0">در حال استفاده</option>
-                        <option value="1" selected>استفاده نشده</option>
-                    </select>
-                </div>
-            </section>
-            <hr>
-            <section class="old-case" id="old-case">
-                <h2>کیس قدیمی</h2>
-                <div class="case-status">
-                    <label for="old-case-status"> وضعیت کیس :</label>
-                    <select id="old-case-status" name="oldCaseStatus">
-                        <option value="Select Status" disabled>Select Status</option>
-                        <option value="0">در حال استفاده</option>
-                        <option value="1" selected>از رده خارج شده</option>
-                    </select>
-                </div>
-            </section>
+            <?php if ($caseType === 'new'): ?>
+                <section class="new-case">
+                    <h2>کیس جدید</h2>
+                    <div class="case-status">
+                        <label for="case-status"> وضعیت کیس :</label>
+                        <select id="case-status" name="caseStatus">
+                            <option value="Select Status" disabled selected>Select Status</option>
+                            <option value="in_use">در حال استفاده</option>
+                            <option value="unused">استفاده نشده</option>
+                        </select>
+                    </div>
+                </section>
+                <hr>
+            <?php else: ?>
+                <section class="old-case" id="old-case">
+                    <h2>کیس قدیمی</h2>
+                    <div class="case-status">
+                        <label for="old-case-status"> وضعیت کیس :</label>
+                        <select id="old-case-status" name="oldCaseStatus">
+                            <option value="Select Status" disabled selected>Select Status</option>
+                            <option value="in_use">در حال استفاده</option>
+                            <option value="retired">از رده خارج شده</option>
+                        </select>
+                    </div>
+                </section>
+            <?php endif; ?>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-button">ثبت وضعیت</button>
+            </div>
         </fieldset>
+
+
     </form>
+
+
 
     <script src="<?= ASSETS_URL ?>/js/user-profile.js?v=<?= filemtime(BASE_PATH . '/assets/js/user-profile.js') ?>"></script>
     <script src="<?= ASSETS_URL ?>/js/case-status.js"></script>
