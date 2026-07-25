@@ -8,109 +8,52 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 require_once __DIR__ . '/../bootstrap/constants.php';
 require_once __DIR__ . '/../bootstrap/database.php';
+require_once __DIR__ . '/../libs/lib-case-status.php';
 
-const NEW_CASE_MIN_CPU_GENERATION = 12;
-
+/**
+ * Redirects the request to the case status page.
+ */
 function redirectToCaseStatus(): never
 {
-    header(
-        'Location: '
-            . BASE_URL
-            . '/pages/case/case-status.php'
-    );
+    header('Location: ' . BASE_URL . '/pages/case/case-status.php');
     exit;
 }
 
+/**
+ * Redirects to the case form with a validation error message.
+ */
 function redirectToCaseFormWithError(string $message): never
 {
     $_SESSION['case_form_error'] = $message;
 
-    header(
-        'Location: '
-            . BASE_URL
-            . '/pages/case/case.php'
-    );
+    header('Location: ' . BASE_URL . '/pages/case/case.php');
     exit;
 }
 
+/**
+ * Redirects to the case status page with a flash error message.
+ */
 function redirectWithCaseStatusError(string $message): never
 {
     $_SESSION['case_status_error'] = $message;
     redirectToCaseStatus();
 }
 
-function readStatusStringInput(mixed $value): string
-{
-    if (!is_string($value)) {
-        throw new InvalidArgumentException(
-            'ساختار اطلاعات فرم معتبر نیست.'
-        );
-    }
-
-    return trim($value);
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    redirectToCaseStatus();
 }
 
-function findRegisteredCaseForStatus(
-    PDO $pdo,
-    int $caseId,
-    int $createdByUserId,
-    int $receiverEmployeeId
-): array {
-    $statement = $pdo->prepare(
-        'SELECT
-            case_numbers.it_number,
-            case_cpus.generation
-        FROM case_numbers
-        INNER JOIN case_cpus
-            ON case_cpus.it_number = case_numbers.it_number
-        WHERE case_numbers.id = :case_id
-          AND case_numbers.created_by_user_id = :created_by_user_id
-          AND case_numbers.receiver_employee_id = :receiver_employee_id
-        LIMIT 1'
-    );
-
-    $statement->execute([
-        'case_id' => $caseId,
-        'created_by_user_id' => $createdByUserId,
-        'receiver_employee_id' => $receiverEmployeeId,
-    ]);
-
-    $caseRecord = $statement->fetch(PDO::FETCH_ASSOC);
-
-    if (!$caseRecord) {
-        throw new RuntimeException(
-            'اطلاعات کیس یا CPU آن پیدا نشد.'
-        );
-    }
-
-    return $caseRecord;
-}
-
-$authenticatedUserId = (int) (
-    $_SESSION['authenticated_user_id'] ?? 0
-);
-$receiverEmployeeId = (int) (
-    $_SESSION['receiver_user_id'] ?? 0
-);
-$registeredCaseId = (int) (
-    $_SESSION['registered_case_id'] ?? 0
-);
+$authenticatedUserId = (int) ($_SESSION['authenticated_user_id'] ?? 0);
+$receiverEmployeeId = (int) ($_SESSION['receiver_user_id'] ?? 0);
+$registeredCaseId = (int) ($_SESSION['registered_case_id'] ?? 0);
 
 if ($authenticatedUserId < 1) {
-    header(
-        'Location: '
-            . BASE_URL
-            . '/pages/normal-login/normal-login.php'
-    );
+    header('Location: ' . BASE_URL . '/pages/normal-login/normal-login.php');
     exit;
 }
 
 if ($receiverEmployeeId < 1) {
-    header(
-        'Location: '
-            . BASE_URL
-            . '/pages/select-user/select-user.php'
-    );
+    header('Location: ' . BASE_URL . '/pages/select-user/select-user.php');
     exit;
 }
 
@@ -121,109 +64,45 @@ if ($registeredCaseId < 1) {
 }
 
 try {
-    $caseRecord = findRegisteredCaseForStatus(
+    $caseContext = findRegisteredCaseStatusContext(
         $pdo,
         $registeredCaseId,
         $authenticatedUserId,
         $receiverEmployeeId
     );
 
-    $itNumber = (string) $caseRecord['it_number'];
-    $cpuGeneration = (int) $caseRecord['generation'];
-
-    if ($cpuGeneration < 1) {
-        throw new RuntimeException(
-            'نسل CPU ثبت‌شده معتبر نیست.'
-        );
-    }
-
-    $caseType = $cpuGeneration >= NEW_CASE_MIN_CPU_GENERATION
-        ? 'new'
-        : 'old';
-
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        $executedFile = realpath(
-            (string) ($_SERVER['SCRIPT_FILENAME'] ?? '')
-        );
-
-        if ($executedFile === realpath(__FILE__)) {
-            redirectToCaseStatus();
-        }
-
-        return;
-    }
-
-    $submittedToken = readStatusStringInput(
-        $_POST['csrf_token']
-            ?? $_POST['csrf-token']
-            ?? ''
-    );
+    $itNumber = (string) $caseContext['it_number'];
+    $caseType = determineCaseType((int) $caseContext['generation']);
+    $submittedToken = $_POST['csrf_token'] ?? null;
     $sessionToken = $_SESSION['csrf_token'] ?? '';
 
     if (
-        !is_string($sessionToken)
-        || $submittedToken === ''
+        !is_string($submittedToken)
+        || !is_string($sessionToken)
+        || trim($submittedToken) === ''
         || $sessionToken === ''
-        || !hash_equals($sessionToken, $submittedToken)
+        || !hash_equals($sessionToken, trim($submittedToken))
     ) {
         throw new InvalidArgumentException(
             'درخواست نامعتبر است؛ صفحه را دوباره بارگذاری کنید.'
         );
     }
 
-    $caseStatus = readStatusStringInput(
-        $_POST['case_status']
-            ?? $_POST['caseStatus']
-            ?? $_POST['oldCaseStatus']
-            ?? ''
+    $caseStatus = validateSubmittedCaseStatus(
+        $_POST['case_status'] ?? null,
+        $caseType
     );
 
-    $allowedStatuses = $caseType === 'new'
-        ? ['in_use', 'unused']
-        : ['in_use', 'retired'];
+    upsertCaseStatus($pdo, $itNumber, $caseType, $caseStatus);
 
-    if (!in_array($caseStatus, $allowedStatuses, true)) {
-        throw new InvalidArgumentException(
-            'وضعیت انتخاب‌شده برای این کیس مجاز نیست.'
-        );
-    }
-
-    $statusStatement = $pdo->prepare(
-        'INSERT INTO case_statuses (
-            it_number,
-            case_type,
-            case_status
-        ) VALUES (
-            :it_number,
-            :case_type,
-            :case_status
-        )
-        ON DUPLICATE KEY UPDATE
-            case_type = :updated_case_type,
-            case_status = :updated_case_status,
-            updated_at = CURRENT_TIMESTAMP'
-    );
-
-    $statusStatement->execute([
-        'it_number' => $itNumber,
-        'case_type' => $caseType,
-        'case_status' => $caseStatus,
-        'updated_case_type' => $caseType,
-        'updated_case_status' => $caseStatus,
-    ]);
-
-    $_SESSION['case_status_success'] =
-        'وضعیت کیس با موفقیت ثبت شد.';
+    $_SESSION['case_status_success'] = 'وضعیت کیس با موفقیت ثبت شد.';
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
     redirectToCaseStatus();
 } catch (InvalidArgumentException $exception) {
     redirectWithCaseStatusError($exception->getMessage());
 } catch (Throwable $exception) {
-    error_log(
-        'Save case status error: '
-            . $exception->getMessage()
-    );
+    error_log('Save case status error: ' . $exception->getMessage());
 
     redirectWithCaseStatusError(
         'هنگام ثبت وضعیت کیس خطایی رخ داد.'

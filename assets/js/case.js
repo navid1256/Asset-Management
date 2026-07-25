@@ -26,10 +26,6 @@ const writerUploadButton = document.querySelector('label[for="writer-upload"]');
 const totalRamCapacity = document.getElementById('total-ram-capacity');
 const totalStorageCapacity = document.getElementById('total-storage-capacity');
 
-const CASE_STATUS_STORAGE_KEY = 'itAssetCaseStatus';
-const caseInfoForm = document.getElementById('case-info-form');
-const cpuGenerationSelect = document.getElementById('cpu-gen');
-
 const fileUploadFields = [
     {
         inputId: 'delivery-sheet',
@@ -78,40 +74,6 @@ function limitNumericInput(inputId, maxLength) {
             .slice(0, maxLength);
     });
 }
-
-function getSelectedCpuGeneration() {
-    if (!cpuGenerationSelect || cpuGenerationSelect.selectedIndex < 0) {
-        return null;
-    }
-
-    const selectedText = cpuGenerationSelect.options[cpuGenerationSelect.selectedIndex].textContent;
-    const generationMatch = selectedText.match(/Gen\s*(\d+)/i);
-
-    return generationMatch ? Number(generationMatch[1]) : null;
-}
-
-function getCaseTypeByCpuGeneration(generation) {
-    if (!generation) {
-        return '';
-    }
-
-    return generation >= 12 ? 'new' : 'old';
-}
-
-function saveCaseStatusByCpuGeneration() {
-    const cpuGeneration = getSelectedCpuGeneration();
-    const caseType = getCaseTypeByCpuGeneration(cpuGeneration);
-
-    localStorage.setItem(CASE_STATUS_STORAGE_KEY, JSON.stringify({
-        cpuGeneration,
-        caseType,
-    }));
-}
-
-if (caseInfoForm) {
-    caseInfoForm.addEventListener('submit', saveCaseStatusByCpuGeneration);
-}
-
 
 function setWriterUploadState(isEnabled) {
     if (!writerUploadInput || !writerUploadButton) {
