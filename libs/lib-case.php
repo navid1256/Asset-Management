@@ -73,3 +73,301 @@ function createCaseCpu(
         'warranty_file_path' => $warrantyFilePath,
     ]);
 }
+
+function createCaseMotherboard(
+    PDO $pdo,
+    string $itNumber,
+    string $brand,
+    string $model,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_motherboards (
+            it_number,
+            brand,
+            model,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :brand,
+            :model,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'brand' => $brand,
+        'model' => $model,
+        'warranty_file_path' => $warrantyFilePath
+    ]);
+}
+
+function createCaseGpu(
+    PDO $pdo,
+    string $itNumber,
+    string $brand,
+    string $gpuType,
+    string $model,
+    string $memoryGB,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_gpus (
+            it_number,
+            brand,
+            gpu_type,
+            model,
+            memory_gb,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :brand,
+            :gpu_type,
+            :model,
+            :memory_gb,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'brand' => $brand,
+        'gpu_type' => $gpuType,
+        'model' => $model,
+        'memory_gb' => $memoryGB,
+        'warranty_file_path' => $warrantyFilePath,
+    ]);
+}
+
+function createCaseRam(
+    PDO $pdo,
+    string $itNumber,
+    string $brand,
+    int $ramCount,
+    string $model,
+    string $ramType,
+    string $moduleCapacityGB,
+    int $speedMHz,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_rams (
+            it_number,
+            brand,
+            ram_count,
+            model,
+            ram_type,
+            module_capacity_gb,
+            speed_mhz,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :brand,
+            :ram_count,
+            :model,
+            :ram_type,
+            :module_capacity_gb,
+            :speed_mhz,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'brand' => $brand,
+        'ram_count' => $ramCount,
+        'model' => $model,
+        'ram_type' => $ramType,
+        'module_capacity_gb' => $moduleCapacityGB,
+        'speed_mhz' => $speedMHz,
+        'warranty_file_path' => $warrantyFilePath,
+    ]);
+}
+
+function createCaseStorageGroup(
+    PDO $pdo,
+    string $itNumber,
+    int $storageCount
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_storage_groups (
+            it_number,
+            storage_count
+        ) VALUES (
+            :it_number,
+            :storage_count
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'storage_count' => $storageCount,
+    ]);
+}
+
+function createStorageDevice(
+    PDO $pdo,
+    string $itNumber,
+    int $deviceNumber,
+    string $storageType,
+    string $brand,
+    string $model,
+    int $capacityGB,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_storage_devices (
+            it_number,
+            device_number,
+            storage_type,
+            brand,
+            model,
+            capacity_gb,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :device_number,
+            :storage_type,
+            :brand,
+            :model,
+            :capacity_gb,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'device_number' => $deviceNumber,
+        'storage_type' => $storageType,
+        'brand' => $brand,
+        'model' => $model,
+        'capacity_gb' => $capacityGB,
+        'warranty_file_path' => $warrantyFilePath,
+    ]);
+}
+
+
+function createCaseWriter(
+    PDO $pdo,
+    string $itNumber,
+    int $writerEnabled,
+    ?string $writerType,
+    ?string $brand,
+    ?string $model,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_writers (
+            it_number,
+            writer_enabled,
+            writer_type,
+            brand,
+            model,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :writer_enabled,
+            :writer_type,
+            :brand,
+            :model,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'writer_enabled' => $writerEnabled,
+        'writer_type' => $writerType,
+        'brand' => $brand,
+        'model' => $model,
+        'warranty_file_path' => $warrantyFilePath,
+    ]);
+}
+
+function createCasePowerSupply(
+    PDO $pdo,
+    string $itNumber,
+    string $brand,
+    string $model,
+    int $wattageW,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_power_supplies (
+            it_number,
+            brand,
+            model,
+            wattage_w,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :brand,
+            :model,
+            :wattage_w,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'brand' => $brand,
+        'model' => $model,
+        'wattage_w' => $wattageW,
+        'warranty_file_path' => $warrantyFilePath,
+    ]);
+}
+
+function createCaseChassis(
+    PDO $pdo,
+    string $itNumber,
+    string $brand,
+    string $model,
+    ?string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_chassis (
+            it_number,
+            brand,
+            model,
+            warranty_file_path
+        ) VALUES (
+            :it_number,
+            :brand,
+            :model,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'brand' => $brand,
+        'model' => $model,
+        'warranty_file_path' => $warrantyFilePath,
+    ]);
+}
+
+function createCaseStatus(
+    PDO $pdo,
+    string $itNumber,
+    string $caseType,
+    string $caseStatus
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_statuses (
+            it_number,
+            case_type,
+            case_status
+        ) VALUES (
+            :it_number,
+            :case_type,
+            :case_status
+        )'
+    );
+
+    $statement->execute([
+        'it_number' => $itNumber,
+        'case_type' => $caseType,
+        'case_status' => $caseStatus,
+    ]);
+}
