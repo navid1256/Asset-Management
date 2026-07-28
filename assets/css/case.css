@@ -374,6 +374,18 @@ section.component {
     justify-content: flex-start;
 }
 
+.ram-row>.ram.warranty,
+.hard-row>.hard.warranty {
+    flex: 0 0 100%;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.ram-warranty,
+.hard-warranty {
+    width: 100%;
+}
+
 .ram.capacity select {
     width: 120px;
 }
@@ -448,16 +460,7 @@ div.ram.model select {
     justify-content: flex-start;
 }
 
-.hard-row>.hard.warranty {
-    flex: 0 0 100%;
-    width: 100%;
-    padding: 0 10px;
-}
-
-.hard-warranty {
-    width: 100%;
-}
-
+.component-footer.ram-footer,
 .component-footer.storage-footer {
     justify-content: flex-end;
 }
@@ -1130,7 +1133,7 @@ form .form-actions {
     .power>div select,
     .case>div select,
     .ram-row>div select,
-    .ram-row>div input,
+    .ram-row>div input:not(.component-file-input),
     .hard-row>div select,
     .dvd-writer-row>div select,
     div.ram.slot-number select,

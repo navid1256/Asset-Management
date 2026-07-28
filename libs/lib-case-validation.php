@@ -201,10 +201,12 @@ function buildRamConfigurations(array $post, int $ramCount): array
                 'module_capacity_gb' => $capacityGB,
                 'speed_mhz' => $speedMHz,
                 'ram_count' => 0,
+                'module_numbers' => [],
             ];
         }
 
         $configurations[$configurationKey]['ram_count']++;
+        $configurations[$configurationKey]['module_numbers'][] = $index + 1;
     }
 
     return array_values($configurations);

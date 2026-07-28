@@ -329,18 +329,21 @@ unset($_SESSION['case_form_success'], $_SESSION['case_form_error']);
                                         placeholder="MHz" required>
                                     <span class="speed-unit">MHz</span>
                                 </div>
+                                <div class="ram warranty">
+                                    <div class="component-upload ram-warranty">
+                                        <label for="ram-upload-1" class="component-upload-button">بارگذاری تصویر
+                                            گارانتی</label>
+                                        <input type="file" id="ram-upload-1" name="ram_warranty_files[]"
+                                            class="component-file-input ram-warranty-input"
+                                            accept="image/*,application/pdf">
+                                        <span class="component-file-name" data-ram-file-name
+                                            aria-live="polite">فایلی انتخاب نشده</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="component-footer">
-                        <div class="component-upload">
-                            <label for="ram-upload" class="component-upload-button">بارگذاری تصویر گارانتی</label>
-                            <input type="file" id="ram-upload" name="ram_warranty_file" class="component-file-input"
-                                accept="image/*,application/pdf">
-                            <span class="component-file-name" data-file-name-for="ram-upload" aria-live="polite">فایلی
-                                انتخاب نشده</span>
-                        </div>
-
+                    <div class="component-footer ram-footer">
                         <div class="component-total">
                             <span>ظرفیت کل RAM :</span>
                             <output id="total-ram-capacity">0GB</output>

@@ -44,10 +44,6 @@ const fileUploadFields = [
         fileNameSelector: '[data-file-name-for="gpu-upload"]',
     },
     {
-        inputId: 'ram-upload',
-        fileNameSelector: '[data-file-name-for="ram-upload"]',
-    },
-    {
         inputId: 'writer-upload',
         fileNameSelector: '[data-file-name-for="writer-upload"]',
     },
@@ -274,6 +270,22 @@ function updateStorageWarrantyFileName(event) {
     updateFileName(inputElement, fileNameElement);
 }
 
+/**
+ * Updates the displayed filename for a RAM row warranty upload.
+ */
+function updateRamWarrantyFileName(event) {
+    const inputElement = event.target;
+
+    if (!inputElement.matches('.ram-warranty-input')) {
+        return;
+    }
+
+    const uploadContainer = inputElement.closest('.ram-warranty');
+    const fileNameElement = uploadContainer?.querySelector('[data-ram-file-name]');
+
+    updateFileName(inputElement, fileNameElement);
+}
+
 function bindFileUpload({ inputId, fileNameSelector }) {
     const inputElement = document.getElementById(inputId);
     const fileNameElement = document.querySelector(fileNameSelector);
@@ -313,6 +325,7 @@ slotNumberSelect.addEventListener('change', renderRamRows);
 hardNumberSelect.addEventListener('change', renderHardRows);
 
 ramSlots.addEventListener('change', updateTotalRamCapacity);
+ramSlots.addEventListener('change', updateRamWarrantyFileName);
 storageNumber.addEventListener('change', updateTotalStorageCapacity);
 storageNumber.addEventListener('change', updateStorageWarrantyFileName);
 

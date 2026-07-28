@@ -140,6 +140,9 @@ function createCaseGpu(
     ]);
 }
 
+/**
+ * Stores one grouped RAM configuration and returns its database identifier.
+ */
 function createCaseRam(
     PDO $pdo,
     string $itNumber,
@@ -148,9 +151,8 @@ function createCaseRam(
     string $model,
     string $ramType,
     string $moduleCapacityGB,
-    int $speedMHz,
-    ?string $warrantyFilePath
-): void {
+    int $speedMHz
+): int {
     $statement = $pdo->prepare(
         'INSERT INTO case_rams (
             it_number,
@@ -159,8 +161,7 @@ function createCaseRam(
             model,
             ram_type,
             module_capacity_gb,
-            speed_mhz,
-            warranty_file_path
+            speed_mhz
         ) VALUES (
             :it_number,
             :brand,
@@ -168,8 +169,7 @@ function createCaseRam(
             :model,
             :ram_type,
             :module_capacity_gb,
-            :speed_mhz,
-            :warranty_file_path
+            :speed_mhz
         )'
     );
 
@@ -181,6 +181,35 @@ function createCaseRam(
         'ram_type' => $ramType,
         'module_capacity_gb' => $moduleCapacityGB,
         'speed_mhz' => $speedMHz,
+    ]);
+
+    return (int) $pdo->lastInsertId();
+}
+
+/**
+ * Stores the warranty file assigned to one physical RAM module.
+ */
+function createCaseRamWarranty(
+    PDO $pdo,
+    int $caseRamId,
+    int $moduleNumber,
+    string $warrantyFilePath
+): void {
+    $statement = $pdo->prepare(
+        'INSERT INTO case_ram_warranties (
+            case_ram_id,
+            module_number,
+            warranty_file_path
+        ) VALUES (
+            :case_ram_id,
+            :module_number,
+            :warranty_file_path
+        )'
+    );
+
+    $statement->execute([
+        'case_ram_id' => $caseRamId,
+        'module_number' => $moduleNumber,
         'warranty_file_path' => $warrantyFilePath,
     ]);
 }

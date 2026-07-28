@@ -66,8 +66,13 @@ try {
     }
 
     $caseData = validateCaseForm($_POST);
+    $ramCount = $caseData['ram']['count'];
     $storageCount = $caseData['storage']['count'];
-    $uploadedFiles = uploadCaseFiles($_FILES, $storageCount);
+    $uploadedFiles = uploadCaseFiles(
+        $_FILES,
+        $ramCount,
+        $storageCount
+    );
     $uploadedPaths = $uploadedFiles['uploaded_paths'];
 
     $caseNumbers = $caseData['case_numbers'];
@@ -81,6 +86,7 @@ try {
     $chassis = $caseData['chassis'];
 
     $itNumber = $caseNumbers['it_number'];
+    $ramWarrantyPaths = $uploadedFiles['ram_warranties'];
     $storageDevices = $storage['devices'];
     $storageWarrantyPaths = $uploadedFiles['storage_warranties'];
 
@@ -133,7 +139,7 @@ try {
     );
 
     foreach ($ram['configurations'] as $ramConfiguration) {
-        createCaseRam(
+        $caseRamId = createCaseRam(
             $pdo,
             $itNumber,
             $ramConfiguration['brand'],
@@ -141,9 +147,21 @@ try {
             $ramConfiguration['model'],
             $ramConfiguration['ram_type'],
             (string) $ramConfiguration['module_capacity_gb'],
-            $ramConfiguration['speed_mhz'],
-            $uploadedFiles['ram_warranty']
+            $ramConfiguration['speed_mhz']
         );
+
+        foreach ($ramConfiguration['module_numbers'] as $moduleNumber) {
+            $ramWarrantyPath = $ramWarrantyPaths[$moduleNumber - 1] ?? null;
+
+            if ($ramWarrantyPath !== null) {
+                createCaseRamWarranty(
+                    $pdo,
+                    $caseRamId,
+                    $moduleNumber,
+                    $ramWarrantyPath
+                );
+            }
+        }
     }
 
     createCaseStorageGroup(

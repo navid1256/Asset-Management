@@ -27,14 +27,78 @@ function storeOptionalCaseUploadedFile(
 }
 
 /**
- * Stores up to three warranty files before storing the delivery sheet.
+ * Stores optional repeated warranty files while preserving their row indexes.
  */
-function uploadCaseFiles(array $files, int $storageCount): array
+function storeOptionalRepeatedCaseUploadedFiles(
+    array $uploadedFileGroup,
+    int $expectedCount,
+    string $componentName,
+    string $destinationDirectory,
+    string $storedPathPrefix
+): array {
+    $fileParts = [];
+
+    foreach (['name', 'tmp_name', 'error', 'size'] as $partName) {
+        $partValues = $uploadedFileGroup[$partName] ?? [];
+
+        if (!is_array($partValues)) {
+            throw new InvalidArgumentException(
+                "ساختار فایل‌های گارانتی {$componentName} معتبر نیست."
+            );
+        }
+
+        $fileParts[$partName] = $partValues;
+    }
+
+    if (count($fileParts['name']) > $expectedCount) {
+        throw new InvalidArgumentException(
+            "تعداد برگه‌های گارانتی {$componentName} بیشتر از تعداد انتخاب‌شده است."
+        );
+    }
+
+    $storedPaths = [];
+
+    for ($index = 0; $index < $expectedCount; $index++) {
+        $uploadedFile = [
+            'name' => $fileParts['name'][$index] ?? '',
+            'tmp_name' => $fileParts['tmp_name'][$index] ?? '',
+            'error' => $fileParts['error'][$index]
+                ?? UPLOAD_ERR_NO_FILE,
+            'size' => $fileParts['size'][$index] ?? 0,
+        ];
+        $storedPath = storeOptionalCaseUploadedFile(
+            $uploadedFile,
+            $destinationDirectory,
+            $storedPathPrefix
+        );
+
+        if ($storedPath !== null) {
+            $storedPaths[$index] = $storedPath;
+        }
+    }
+
+    return $storedPaths;
+}
+
+/**
+ * Stores component warranty files before storing the required delivery sheet.
+ */
+function uploadCaseFiles(
+    array $files,
+    int $ramCount,
+    int $storageCount
+): array
 {
     // ============== FILE UPLOADS ==============
     $uploadedPaths = [];
     $warrantyDirectory = BASE_PATH . '/storage/uploads/warranties';
     $warrantyPathPrefix = 'storage/uploads/warranties';
+
+    if ($ramCount < 1 || $ramCount > 4) {
+        throw new InvalidArgumentException(
+            'تعداد RAM برای بارگذاری گارانتی معتبر نیست.'
+        );
+    }
 
     if ($storageCount < 1 || $storageCount > 3) {
         throw new InvalidArgumentException(
@@ -73,51 +137,28 @@ function uploadCaseFiles(array $files, int $storageCount): array
             $uploadedPaths[] = $gpuWarrantyPath;
         }
 
-        // RAM Warranty
-        $ramWarrantyPath = storeOptionalCaseUploadedFile(
-            $files['ram_warranty_file'] ?? [],
+        // RAM Warranties (array)
+        $ramWarrantyPaths = storeOptionalRepeatedCaseUploadedFiles(
+            $files['ram_warranty_files'] ?? [],
+            $ramCount,
+            'RAM',
             $warrantyDirectory,
             $warrantyPathPrefix
         );
-        if ($ramWarrantyPath !== null) {
+        foreach ($ramWarrantyPaths as $ramWarrantyPath) {
             $uploadedPaths[] = $ramWarrantyPath;
         }
 
-        // Storage Device Warranty (array)
-        $storageWarrantyPaths = [];
-        $storageWarrantyFiles = $files['storage_warranty_files'] ?? [];
-        $storageWarrantyNames = $storageWarrantyFiles['name'] ?? [];
-
-        if (!is_array($storageWarrantyNames)) {
-            throw new InvalidArgumentException(
-                'ساختار فایل‌های گارانتی Storage معتبر نیست.'
-            );
-        }
-
-        if (count($storageWarrantyNames) > $storageCount) {
-            throw new InvalidArgumentException(
-                'تعداد برگه‌های گارانتی Storage بیشتر از تعداد هاردها است.'
-            );
-        }
-
-        for ($index = 0; $index < $storageCount; $index++) {
-            $storageWarrantyFile = [
-                'name' => $storageWarrantyNames[$index] ?? '',
-                'tmp_name' => $storageWarrantyFiles['tmp_name'][$index] ?? '',
-                'error' => $storageWarrantyFiles['error'][$index]
-                    ?? UPLOAD_ERR_NO_FILE,
-                'size' => $storageWarrantyFiles['size'][$index] ?? 0,
-            ];
-            $storageWarrantyPath = storeOptionalCaseUploadedFile(
-                $storageWarrantyFile,
-                $warrantyDirectory,
-                $warrantyPathPrefix
-            );
-
-            if ($storageWarrantyPath !== null) {
-                $storageWarrantyPaths[$index] = $storageWarrantyPath;
-                $uploadedPaths[] = $storageWarrantyPath;
-            }
+        // Storage Device Warranties (array)
+        $storageWarrantyPaths = storeOptionalRepeatedCaseUploadedFiles(
+            $files['storage_warranty_files'] ?? [],
+            $storageCount,
+            'Storage',
+            $warrantyDirectory,
+            $warrantyPathPrefix
+        );
+        foreach ($storageWarrantyPaths as $storageWarrantyPath) {
+            $uploadedPaths[] = $storageWarrantyPath;
         }
 
         // Writer Warranty
@@ -162,7 +203,7 @@ function uploadCaseFiles(array $files, int $storageCount): array
             'cpu_warranty' => $cpuWarrantyPath,
             'motherboard_warranty' => $motherboardWarrantyPath,
             'gpu_warranty' => $gpuWarrantyPath,
-            'ram_warranty' => $ramWarrantyPath,
+            'ram_warranties' => $ramWarrantyPaths,
             'storage_warranties' => $storageWarrantyPaths,
             'writer_warranty' => $writerWarrantyPath,
             'power_supply_warranty' => $powerSupplyWarrantyPath,
