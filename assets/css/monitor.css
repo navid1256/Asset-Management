@@ -1,0 +1,258 @@
+@import url(../fonts/Dana/css/fontiran.css);
+
+/* =========================
+   Base
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    direction: rtl;
+    font-family: dana, Arial, sans-serif;
+    background-color: #e4e9e3;
+    color: #222;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+/* =========================
+   Header
+========================= */
+
+header {
+    position: relative;
+    min-width: 1200px;
+    width: 100%;
+    height: 200px;
+    background-color: #AAC2AE;
+    margin-top: -25px;
+}
+
+header h1 {
+    font-size: 31px;
+    font-weight: 600;
+    justify-self: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 75px;
+}
+
+header img {
+    position: absolute;
+    top: 22px;
+    left: 48px;
+    width: 177px;
+    height: 129px;
+}
+
+.user-profile {
+    position: absolute;
+    top: 40px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 280px;
+    height: 80px;
+    padding: 0 10px 0 0;
+    background-color: aliceblue;
+    border-radius: 10px;
+}
+
+.avatar {
+    position: static;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    margin: 0;
+    color: #222;
+    font-size: 14px;
+
+}
+
+.userrole {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.logged-in-user {
+    position: absolute;
+    top: 130px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 280px;
+    min-height: 32px;
+    padding: 6px 12px;
+    color: #222;
+    background-color: aliceblue;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.logged-in-user span:last-child {
+    font-weight: 600;
+}
+
+/* =========================
+   Form
+========================= */
+
+form {
+    padding: 30px;
+}
+
+form h2 {
+    width: 150px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #222;
+    font-size: 24px;
+}
+
+.form-section {
+    margin-bottom: 10px;
+    padding: 30px 25px 25px;
+    background-color: rgba(255, 255, 255, 0.35);
+    border: 2px solid #6f8f73;
+    border-radius: 14px;
+}
+
+.form-section>legend {
+    padding: 0 14px;
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* =========================
+   First Fieldset - IT Numbers
+========================= */
+
+section.it-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-evenly;
+}
+
+form div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-evenly;
+}
+
+label {
+    width: 100px;
+    text-align: left;
+}
+
+/* =========================
+   Inputs
+========================= */
+
+input {
+    display: flex;
+    flex: content;
+    flex-direction: row;
+    height: 35px;
+    padding: 0 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+}
+
+/* =========================
+   Selects
+========================= */
+
+select {
+    width: 100%;
+    min-height: 35px;
+    padding: 9px 44px 9px 16px;
+    color: #222;
+    background-color: #f5f5f5;
+    border: 1px solid #0e0f0e;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image:
+        linear-gradient(45deg, transparent 50%, currentColor 50%),
+        linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position:
+        calc(100% - 20px) 14px,
+        calc(100% - 14px) 14px;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+select:focus {
+    border-color: #111412;
+    box-shadow: 0 0 0 3px rgba(21, 24, 21, 0.25);
+    background-color: #ffffff;
+}
+
+select:disabled {
+    color: #999;
+    background-color: #efefef;
+    border-color: #d0d0d0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* =========================
+   Hardware Section
+========================= */
+
+section.hardware label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+section.hardware select {
+    width: auto;
+}
+
+section.component {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 20px 0 80px;
+    border-bottom: 1px solid rgb(24, 24, 18);
+}

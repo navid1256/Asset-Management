@@ -49,7 +49,8 @@ if (empty($_SESSION['receiver_user_id'])) {
         <section class="asset-actions" aria-label="انتخاب نوع تجهیزات">
             <button type="button" class="asset-button"
                 data-target-page="<?= BASE_URL ?>/pages/case/case.php">کیس</button>
-            <button type="button" class="asset-button">هاب USB</button>
+            <button type="button" class="asset-button"
+                data-target-page="<?= BASE_URL ?>/pages/monitor/monitor.php"> مانیتور</button>
             <button type="button" class="asset-button">تونر</button>
             <button type="button" class="asset-button">لپ تاپ</button>
             <button type="button" class="asset-button">موس و کیبورد</button>
