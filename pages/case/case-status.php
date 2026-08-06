@@ -100,7 +100,8 @@ unset(
         <?php endif; ?>
 
         <?php if (is_string($statusSuccess) && $statusSuccess !== ''): ?>
-            <p class="form-message form-message--success" role="status">
+            <p class="form-message form-message--success" role="status"
+                data-success-redirect="<?= htmlspecialchars(BASE_URL . '/pages/select-assets/assets.php', ENT_QUOTES, 'UTF-8') ?>">
                 <?= htmlspecialchars($statusSuccess, ENT_QUOTES, 'UTF-8') ?>
             </p>
         <?php endif; ?>
@@ -159,6 +160,7 @@ unset(
 
 
     <script src="<?= ASSETS_URL ?>/js/user-profile.js?v=<?= filemtime(BASE_PATH . '/assets/js/user-profile.js') ?>"></script>
+    <script src="<?= ASSETS_URL ?>/js/case-status.js?v=<?= filemtime(BASE_PATH . '/assets/js/case-status.js') ?>"></script>
 </body>
 
 </html>
